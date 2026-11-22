@@ -1,59 +1,60 @@
 # TGSRTC Corporate Mobility Planner
 
-A plain HTML, CSS and JavaScript project. No React, Bootstrap, Streamlit, npm or build step is required.
+The TGSRTC Corporate Mobility Planner is a workforce transport planning tool that helps organisations explore the fleet and monthly cost of an employee commute service.
 
-## Open in VS Code
+## What the tool does
 
-1. Extract this ZIP to a folder.
-2. Open the extracted `TGSRTC_Mobility_Planner` folder in VS Code.
-3. Install the **Live Server** extension (Ritwick Dey), if you do not already have it.
-4. Right-click `index.html` and choose **Open with Live Server**.
+The planner turns organisation and commute details into an indicative mobility estimate. It helps teams:
 
-You can also open `index.html` directly in a browser, but Live Server is recommended while editing.
+- Build a workforce transport profile
+- Record whether cabs or buses are already used
+- Map employee clusters and route distances
+- Compare TGSRTC fleet options
+- Estimate buses required and monthly cost
+- Compare proposed costs with current transport expenditure
+- View indicative cab and carbon-impact metrics
+- Export or print the estimate as a PDF
 
-## Add or replace bus photographs
+## Planning workflow
 
-Put your own photos in the `images` folder and use these exact filenames:
+1. **Workforce profile** — organisation, employee count and office location
+2. **Current arrangement** — existing cab or bus transport
+3. **Commute map** — employee areas and one-way or round-trip distances
+4. **Fleet selection** — diesel or electric City Ordinary and Metro Express options
+5. **Mobility estimate** — fleet, cost, route, cab and environmental indicators
 
-| Vehicle | Filename |
-|---|---|
-| Opening / hero background | `hero-bus.jpg` |
-| City Ordinary diesel | `city-ordinary.jpg` |
-| Green City Ordinary electric | `green-city-ordinary.jpg` |
-| Metro Express diesel | `metro-express.jpg` |
-| Green Metro Express electric | `green-metro-express.jpg` |
+## Fleet options
 
-The project already includes the supplied TGSRTC photo as `hero-bus.jpg`, with crops for Green CO and Green ME. Replace these with higher-resolution individual photos whenever available. Keep the filenames the same, or update the image paths in `index.html`.
-
-## Project structure
-
-- `index.html` — page structure and form workflow
-- `css/styles.css` — palette, responsive layout, transitions and animations
-- `js/app.js` — conditional fields, bus capacities, tariff selection and calculations
-- `images/` — local bus photographs
-
-## Current vehicle configuration
-
-| Product | Capacity | 40–79 km | 80 km and above |
+| Fleet | Capacity | 40–79 km | 80 km and above |
 |---|---:|---:|---:|
-| City Ordinary (CO), diesel | 45 | ₹57/km | ₹53/km |
-| Green City Ordinary, electric | 35 | ₹57/km | ₹53/km |
-| Metro Express (ME), diesel | 45 | ₹62/km | ₹57/km |
-| Green Metro Express, electric | 35 | ₹62/km | ₹57/km |
+| City Ordinary — diesel | 45 seats | ₹57/km | ₹53/km |
+| Green City Ordinary — electric | 35 seats | ₹57/km | ₹53/km |
+| Metro Express — diesel | 45 seats | ₹62/km | ₹57/km |
+| Green Metro Express — electric | 35 seats | ₹62/km | ₹57/km |
 
-The Green variants use the same rates as their corresponding CO / ME products, as instructed.
+The Green variants use the same tariff bands as their corresponding diesel fleet.
 
-Tariffs are transcribed from the supplied TGSRTC Circular No. 27/2022 dated 17.06.2022. The calculator only applies the listed bands; route distances below 40 km are not assigned an invented rate.
+## How estimates are calculated
 
-## Important calculation note
+- One-way route entries are doubled to represent the daily return journey.
+- Round-trip entries are used as the complete daily distance.
+- The fare distance is the greater of 40 km or the calculated daily distance.
+- Fleet requirements are calculated separately for every employee cluster.
+- Buses required are rounded up to the next whole bus based on selected fleet capacity.
+- The monthly estimate is based on:
 
-Monthly estimate = buses required × route km per bus per day × applicable tariff × operating days per month.
+**Buses × fare distance per day × applicable tariff × operating days per month**
 
-The app currently treats the entered route distance as the billable kilometres per bus per day. Confirm whether the route distance should be one-way or round-trip before using estimates operationally.
+## Cost and impact indicators
 
-The workflow includes routes and kilometres, cost comparison, buses required, cabs potentially avoided and carbon avoided. Carbon is calculated only if the user supplies current cab kilometres per cab per day and verified cab and bus emission factors. The cabs-avoided figure is a seat-equivalent planning indicator, not a guaranteed number of cabs removed.
+The cost difference compares the current reported monthly spend with the proposed TGSRTC estimate.
 
-This is a planning prototype, not a TGSRTC quotation or confirmation of service.
+The cabs-potentially-avoided figure is a seat-equivalent planning indicator. It estimates how many cab deployments could be replaced by the proposed fleet size; it does not predict actual cab removals.
 
+Carbon estimates use indicative occupancy and emission assumptions. A current carbon baseline is included only when existing company transport is reported. Where no baseline is available, the tool does not claim carbon savings.
 
-**Opening animation:** The intro in this VS Code build uses the original standalone HTML opening animation, including its original embedded bus photograph, typography, movement, road-line animation and timed exit. The rest of the application remains in separate HTML/CSS/JS files.
+## Planning basis
+
+The tariff values are based on TGSRTC Circular No. 27/2022 dated 17 June 2022.
+
+This is an indicative corporate mobility planning tool, not a quotation or confirmation of service. Route feasibility, exact tariff application, vehicle availability, operating terms and distance assumptions should be confirmed with TGSRTC before operational use.
