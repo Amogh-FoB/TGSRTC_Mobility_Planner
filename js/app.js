@@ -445,8 +445,12 @@ function calculate() {
   const cabEmployees = Number($("#cabEmployees").value) || 0;
   const cabs = Number($("#cabs").value) || 0;
 
-  const avoided = (cabEmployees > 0 && cabs > 0)
-    ? Math.min(cabs, Math.ceil(cabEmployees / fleet.capacity))
+  // Estimate cabs avoided from the share of existing cab users shifted
+  // to the proposed TGSRTC service. Cap shifted users at the current cab-user
+  // count and cap avoided vehicles at the number currently deployed.
+  const cabUsersShifted = Math.min(cabEmployees, covered);
+  const avoided = (cabEmployees > 0 && cabs > 0 && cabUsersShifted > 0)
+    ? Math.min(cabs, Math.round((cabUsersShifted / cabEmployees) * cabs))
     : null;
 
   $("#resultCost").textContent = money(monthly);
