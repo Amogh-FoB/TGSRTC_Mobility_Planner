@@ -84,18 +84,18 @@ document.addEventListener("input", event => {
 
 // Match the original standalone HTML intro: cinematic reveal, then automatic exit.
 setTimeout(() => {
-    const intro = document.getElementById('intro');
+  const intro = document.getElementById('intro');
 
-    document.body.classList.add('page-entering');
+  document.body.classList.add('page-entering');
 
-    if (intro) {
-        intro.classList.add('intro-exit');
+  if (intro) {
+    intro.classList.add('intro-exit');
 
-        setTimeout(() => {
-            intro.remove();
-            document.body.classList.remove('page-entering');
-        }, 1250);
-    }
+    setTimeout(() => {
+      intro.remove();
+      document.body.classList.remove('page-entering');
+    }, 1250);
+  }
 }, 5000);
 
 $$("[data-next]").forEach(btn => btn.addEventListener("click", () => advance()));
@@ -105,18 +105,63 @@ $$('input[name="kind"]').forEach(c => c.addEventListener("change", updateKinds))
 $$(".fleet-card").forEach(card => card.addEventListener("click", () => chooseFleet(card)));
 $("#addRoute").addEventListener("click", addRoute);
 
+
+function routeChoiceControls(isFirst = false) {
+  if (isFirst) return `<div class="route-choice route-choice-first"><span class="route-choice-label">BUS ROUTE</span><span class="route-choice-note">First pickup area</span></div>`;
+  return `
+    <div class="route-choice" role="group" aria-label="Route assignment">
+      <span class="route-choice-label">THIS AREA</span>
+      <div class="route-choice-actions">
+        <button type="button" class="route-choice-btn is-active" data-route-choice="save" aria-pressed="true">Save</button>
+        <button type="button" class="route-choice-btn" data-route-choice="previous" aria-pressed="false">Add this to previous route</button>
+      </div>
+    </div>`;
+}
+function initialiseRouteChoices() {
+  $$(".route-row").forEach((row, index) => {
+    if (!row.dataset.routeGroup) row.dataset.routeGroup = `route-${index}`;
+    if (!$(".route-choice", row)) {
+      const preview = $(".route-normalized", row);
+      const wrapper = document.createElement("div");
+      wrapper.innerHTML = routeChoiceControls(index === 0);
+      row.insertBefore(wrapper.firstElementChild, preview);
+    }
+    if (index > 0 && !row.dataset.routeChoice) row.dataset.routeChoice = "save";
+    updateRouteChoiceUI(row);
+  });
+}
+function updateRouteChoiceUI(row) {
+  $$("[data-route-choice]", row).forEach(button => {
+    const active = button.dataset.routeChoice === (row.dataset.routeChoice || "save");
+    button.classList.toggle("is-active", active);
+    button.setAttribute("aria-pressed", String(active));
+  });
+}
+function assignRouteChoice(row, choice) {
+  const rows = $$(".route-row");
+  const index = rows.indexOf(row);
+  if (index <= 0) return;
+  row.dataset.routeChoice = choice;
+  if (choice === "previous") {
+    const previous = rows[index - 1];
+    row.dataset.routeGroup = previous.dataset.routeGroup || `route-${index - 1}`;
+  } else {
+    row.dataset.routeGroup = `route-${index}`;
+  }
+  updateRouteChoiceUI(row);
+  updateRouteGroupingHint();
+}
+initialiseRouteChoices();
+$("#routeList").addEventListener("click", event => {
+  const button = event.target.closest("[data-route-choice]");
+  if (button) assignRouteChoice(button.closest(".route-row"), button.dataset.routeChoice);
+});
 $("#routeList").addEventListener("input", event => {
-  if (event.target.matches(".route-km")) {
-    updateRoutePreview(event.target.closest(".route-row"));
-  }
+  if (event.target.matches(".route-km")) updateRoutePreview(event.target.closest(".route-row"));
 });
-
 $("#routeList").addEventListener("change", event => {
-  if (event.target.matches(".route-distance-type")) {
-    updateRoutePreview(event.target.closest(".route-row"));
-  }
+  if (event.target.matches(".route-distance-type")) updateRoutePreview(event.target.closest(".route-row"));
 });
-
 $("#calculateButton").addEventListener("click", calculate);
 $("#editPlan").addEventListener("click", () => showPage(1));
 $("#printPlan").addEventListener("click", exportEstimatePdf);
@@ -124,6 +169,32 @@ $("#editOffice").addEventListener("click", () => showPage(1));
 $("#office").addEventListener("input", () =>
   $("#officePreview").textContent = $("#office").value || "Your office location"
 );
+
+const routeGroupingHint = document.createElement("p");
+routeGroupingHint.id = "routeGroupingHint";
+routeGroupingHint.className = "route-grouping-hint";
+routeGroupingHint.textContent = "Choose the same pickup route for areas served by one bus. Otherwise, keep them independent.";
+$(".tariff-note")?.after(routeGroupingHint);
+
+const groupingStyle = document.createElement("style");
+groupingStyle.textContent = `
+  .route-choice{grid-column:2/5;display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:3px 0 5px}
+  .route-choice-label{font-size:8px;letter-spacing:1.2px;font-weight:800;color:#84917f}
+  .route-choice-note{font-size:10px;color:#899588}
+  .route-choice-actions{display:flex;gap:7px;flex-wrap:wrap}
+  .route-choice-btn{border:1px solid #dce5d9;background:#fff;color:#657568;border-radius:4px;padding:8px 12px;font:600 10px inherit;cursor:pointer;transition:background .18s,border-color .18s,color .18s}
+  .route-choice-btn:hover{border-color:#83a96b;color:#244b37}
+  .route-choice-btn.is-active{background:#edf4e8;border-color:#78ad45;color:#214b35;box-shadow:inset 0 0 0 1px #78ad45}
+  .route-choice-first{min-height:25px}
+  .route-grouping-hint{margin:10px 0 0;padding:9px 12px;background:#f2f6ee;border-left:2px solid #78ad45;color:#758273;font-size:10px;line-height:1.5}
+  @media(max-width:620px){
+    .route-choice{grid-column:2/4;display:grid;gap:7px}
+    .route-choice-actions{display:grid;grid-template-columns:1fr 1fr}
+    .route-choice-btn{padding:9px 7px}
+  }
+`;
+document.head.append(groupingStyle);
+updateRouteGroupingHint();
 
 const tariffNote = $(".tariff-note span");
 if (tariffNote) {
@@ -176,6 +247,7 @@ function addRoute() {
       </div>
     </div>
     <button class="remove-route" type="button" aria-label="Remove route">×</button>
+    ${routeChoiceControls(false)}
     <div class="route-normalized" aria-live="polite">
       <span class="route-normalized-label">DAILY DISTANCE USED IN ESTIMATE</span>
       <b class="route-daily-km">— km/day</b>
@@ -186,10 +258,16 @@ function addRoute() {
   row.querySelector(".remove-route").addEventListener("click", () => {
     row.remove();
     renumberRoutes();
+    initialiseRouteChoices();
+    updateRouteGroupingHint();
   });
 
+  row.dataset.routeGroup = `route-${count}`;
+  row.dataset.routeChoice = "save";
   $("#routeList").append(row);
+  initialiseRouteChoices();
   $("#addRoute").classList.toggle("hidden", $$(".route-row").length >= 5);
+  updateRouteGroupingHint();
 }
 
 function renumberRoutes() {
@@ -219,13 +297,25 @@ function chooseFleet(card) {
   });
 }
 
-// Convert entered distance into actual daily distance and billed distance.
+function updateRouteGroupingHint() {
+  const groups = new Map();
+  $$(".route-row").forEach((row, index) => {
+    const key = row.dataset.routeGroup || `route-${index}`;
+    groups.set(key, (groups.get(key) || 0) + 1);
+  });
+  const shared = [...groups.values()].filter(count => count > 1).length;
+  const note = $("#routeGroupingHint");
+  if (note) note.textContent = shared
+    ? `${shared} shared route${shared === 1 ? "" : "s"} configured. Areas added to a previous route will be picked up by the same bus.`
+    : "Each area is saved as a separate bus route. Choose “Add this to previous route” to combine consecutive pickup areas.";
+}
+
 function getRoutes() {
-  return $$(".route-row").map(row => {
+  return $$(".route-row").map((row, index) => {
     const enteredKm = Number($(".route-km", row).value) || 0;
     const distanceType = $(".route-distance-type", row)?.value || "one-way";
-
     const dailyKm = enteredKm * (distanceType === "one-way" ? 2 : 1);
+    const selectedGroup = row.dataset.routeGroup || `route-${index}`;
 
     return {
       area: $(".route-area", row).value.trim(),
@@ -233,9 +323,45 @@ function getRoutes() {
       enteredKm,
       distanceType,
       dailyKm,
-      fareKm: Math.max(40, dailyKm)
+      fareKm: Math.max(40, dailyKm),
+      routeGroup: selectedGroup
     };
   });
+}
+
+// Merge areas assigned to the same shared corridor. For a shared corridor,
+// the longest entered daily distance is used as the approximate end-to-end
+// corridor distance; the individual area distances remain available for
+// passenger-kilometre carbon calculations.
+function buildBusRoutes(routes) {
+  const groups = new Map();
+  routes.forEach((route, index) => {
+    const key = route.routeGroup || `separate-${index}`;
+    if (!groups.has(key)) {
+      groups.set(key, {
+        ...route,
+        areas: [route.area],
+        employees: 0,
+        dailyKm: 0,
+        fareKm: 0,
+        shared: key.startsWith("shared-"),
+        routeGroup: key
+      });
+    }
+    const group = groups.get(key);
+    group.employees += route.employees;
+    group.dailyKm = Math.max(group.dailyKm, route.dailyKm);
+    group.fareKm = Math.max(group.fareKm, route.fareKm);
+    if (route.area && !group.areas.includes(route.area)) group.areas.push(route.area);
+  });
+
+  return [...groups.values()].map(group => ({
+    ...group,
+    area: group.areas.join(" → "),
+    corridorLabel: group.shared
+      ? `Shared corridor ${Number(group.routeGroup.split("-")[1])}`
+      : group.areas[0]
+  }));
 }
 
 // Update the distance and tariff preview as the user enters data.
@@ -258,8 +384,7 @@ function updateRoutePreview(row) {
     `${Number(dailyKm.toFixed(1))} km/day`;
 
   $(".route-tariff-band", row).textContent =
-    `Fare distance: ${Number(fareKm.toFixed(1))} km · ${
-      fareKm < 80 ? "40–79 km tariff band" : "80 km and above tariff band"
+    `Fare distance: ${Number(fareKm.toFixed(1))} km · ${fareKm < 80 ? "40–79 km tariff band" : "80 km and above tariff band"
     }`;
 }
 
@@ -420,7 +545,8 @@ function calculate() {
     return;
   }
 
-  const priced = routes.map(r => ({
+  const busRoutes = buildBusRoutes(routes);
+  const priced = busRoutes.map(r => ({
     ...r,
     buses: Math.ceil(r.employees / fleet.capacity),
     rate: r.fareKm < 80 ? fleet.short : fleet.long
@@ -440,7 +566,7 @@ function calculate() {
 
   const hasCurrentSpend = currentSpend > 0;
   const busCount = priced.reduce((sum, r) => sum + r.buses, 0);
-  const covered = priced.reduce((sum, r) => sum + r.employees, 0);
+  const covered = routes.reduce((sum, r) => sum + r.employees, 0);
 
   const cabEmployees = Number($("#cabEmployees").value) || 0;
   const cabs = Number($("#cabs").value) || 0;
@@ -473,9 +599,9 @@ function calculate() {
 
   // Indicative carbon model: standard proxy factors, not user-entered factors.
   // Actual daily commute distance is used; the 40 km fare minimum is excluded.
-  const totalRouteEmployees = priced.reduce((sum, r) => sum + r.employees, 0);
+  const totalRouteEmployees = routes.reduce((sum, r) => sum + r.employees, 0);
   const weightedDailyKm = totalRouteEmployees > 0
-    ? priced.reduce((sum, r) => sum + r.employees * r.dailyKm, 0) / totalRouteEmployees
+    ? routes.reduce((sum, r) => sum + r.employees * r.dailyKm, 0) / totalRouteEmployees
     : 0;
   const cabCount = Number($("#cabs").value) || 0;
   const currentBusCount = Number($("#buses").value) || 0;
@@ -511,13 +637,13 @@ function calculate() {
   const currentBusKgPerDay = currentBusPassengers * weightedDailyKm * emission.dieselBusKgPerPassengerKm;
   const currentKgPerDay = currentCabKgPerDay + currentBusKgPerDay;
 
-  const proposedPassengerKmPerDay = priced.reduce(
+  const proposedPassengerKmPerDay = routes.reduce(
     (sum, r) => sum + r.employees * r.dailyKm, 0
   );
   const isElectricFleet = selectedFleet === "gco" || selectedFleet === "gme";
   const proposedKgPerDay = isElectricFleet
     ? busCount * priced.reduce((sum, r) => sum + r.dailyKm, 0) *
-      emission.electricBusKwhPerKm * emission.gridKgPerKwh
+    emission.electricBusKwhPerKm * emission.gridKgPerKwh
     : proposedPassengerKmPerDay * emission.dieselBusKgPerPassengerKm;
   const proposedMonthlyKg = proposedKgPerDay * days;
 
@@ -548,7 +674,7 @@ function calculate() {
   ).join("");
 
   $("#resultDisclaimer").textContent =
-    `Calculation uses revised TGSRTC BOC rates from Circular No. 27/2022 dated 17.06.2022. For 40–79 km: CO / Green CO ₹57/km; ME / Green ME ₹62/km. For 80 km and above: CO / Green CO ₹53/km; ME / Green ME ₹57/km. One-way distances are doubled to calculate daily travel; round-trip distances are used as entered. Fare distance is the greater of 40 km or the calculated daily distance. Monthly estimate = buses required × fare distance × applicable rate × operating days. This is an indicative estimate, not a quotation. Carbon estimates are generated automatically using indicative occupancy and emission-factor assumptions. The current baseline is shown only when existing company transport is reported; otherwise no carbon savings are claimed. Confirm route feasibility, exact tariff application, vehicle availability and terms with TGSRTC.`;
+    `Calculation uses revised TGSRTC BOC rates from Circular No. 27/2022 dated 17.06.2022. For 40–79 km: CO / Green CO ₹57/km; ME / Green ME ₹62/km. For 80 km and above: CO / Green CO ₹53/km; ME / Green ME ₹57/km. One-way distances are doubled to calculate daily travel; round-trip distances are used as entered. Fare distance is the greater of 40 km or the calculated daily distance. Monthly estimate = buses required × fare distance × applicable rate × operating days. Areas assigned to the same shared corridor are combined for bus capacity and cost; the longest entered daily distance is used as an approximate corridor distance, so verify the actual pickup sequence and road distance before confirming the route. This is an indicative estimate, not a quotation. Carbon estimates are generated automatically using indicative occupancy and emission-factor assumptions. The current baseline is shown only when existing company transport is reported; otherwise no carbon savings are claimed. Confirm route feasibility, exact tariff application, vehicle availability and terms with TGSRTC.`;
 
   showPage(5);
 }
@@ -737,5 +863,7 @@ $$(".route-row .remove-route").forEach(btn =>
 );
 
 $$(".route-row").forEach(updateRoutePreview);
+initialiseRouteChoices();
+updateRouteGroupingHint();
 updateExisting();
 chooseFleet($(".fleet-card.selected"));

@@ -4905,9 +4905,9 @@ label.field-invalid {
     line-height: 1.7;
 }
 
-.app-modal li + li,
-.validation-modal li + li,
-.custom-modal li + li {
+.app-modal li+li,
+.validation-modal li+li,
+.custom-modal li+li {
     margin-top: 5px;
 }
 
@@ -4971,7 +4971,7 @@ label.field-invalid {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    width: min( calc(100vw - 32px), 360px);
+    width: min(calc(100vw - 32px), 360px);
     pointer-events: none;
 }
 
@@ -5012,8 +5012,15 @@ label.field-invalid {
 }
 
 @keyframes plannerToastIn {
-    from { opacity: 0; transform: translateX(12px); }
-    to { opacity: 1; transform: translateX(0); }
+    from {
+        opacity: 0;
+        transform: translateX(12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }
 
 /* Prevent background scrolling while a modal is open */
@@ -5022,6 +5029,7 @@ body.modal-open {
 }
 
 @media (max-width: 620px) {
+
     .app-modal-overlay,
     .validation-modal-overlay,
     .custom-modal-overlay {
@@ -5048,6 +5056,7 @@ body.modal-open {
 }
 
 @media (prefers-reduced-motion: reduce) {
+
     .app-modal-overlay,
     .validation-modal-overlay,
     .custom-modal-overlay,
@@ -5064,158 +5073,172 @@ body.modal-open {
 
 /* TGSRTC planner validation dialog — matches #appDialog in index.html */
 .app-dialog {
-  position: fixed;
-  inset: 0;
-  z-index: 20000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-  background: rgba(13, 29, 21, 0.62);
-  -webkit-backdrop-filter: blur(5px);
-  backdrop-filter: blur(5px);
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  transition: opacity .22s ease, visibility .22s ease;
+    position: fixed;
+    inset: 0;
+    z-index: 20000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: rgba(13, 29, 21, 0.62);
+    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(5px);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity .22s ease, visibility .22s ease;
 }
 
 .app-dialog.is-open {
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
 }
 
 .app-dialog-panel {
-  width: min(100%, 520px);
-  max-height: min(82vh, 720px);
-  overflow-y: auto;
-  padding: 34px 36px 32px;
-  background: #fbfcf8;
-  border: 1px solid #d8e2d3;
-  border-top: 4px solid #c7dc8b;
-  border-radius: 4px;
-  box-shadow: 0 24px 80px rgba(8, 25, 16, .28);
-  color: #203b2d;
-  transform: translateY(14px) scale(.985);
-  transition: transform .22s ease;
+    width: min(100%, 520px);
+    max-height: min(82vh, 720px);
+    overflow-y: auto;
+    padding: 34px 36px 32px;
+    background: #fbfcf8;
+    border: 1px solid #d8e2d3;
+    border-top: 4px solid #c7dc8b;
+    border-radius: 4px;
+    box-shadow: 0 24px 80px rgba(8, 25, 16, .28);
+    color: #203b2d;
+    transform: translateY(14px) scale(.985);
+    transition: transform .22s ease;
 }
 
 .app-dialog.is-open .app-dialog-panel {
-  transform: translateY(0) scale(1);
+    transform: translateY(0) scale(1);
 }
 
 .app-dialog-mark {
-  display: grid;
-  place-items: center;
-  width: 42px;
-  height: 42px;
-  margin-bottom: 18px;
-  border: 1px solid #f0d0d0;
-  border-radius: 50%;
-  background: #fff3f1;
-  color: #d72f36;
-  font-size: 22px;
-  font-weight: 700;
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    margin-bottom: 18px;
+    border: 1px solid #f0d0d0;
+    border-radius: 50%;
+    background: #fff3f1;
+    color: #d72f36;
+    font-size: 22px;
+    font-weight: 700;
 }
 
 .app-dialog-kicker {
-  margin-bottom: 9px;
-  color: #718274;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: .2em;
+    margin-bottom: 9px;
+    color: #718274;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .2em;
 }
 
 .app-dialog-panel h2 {
-  margin: 0 0 10px;
-  color: #173c2b;
-  font-size: clamp(21px, 3vw, 27px);
-  line-height: 1.2;
+    margin: 0 0 10px;
+    color: #173c2b;
+    font-size: clamp(21px, 3vw, 27px);
+    line-height: 1.2;
 }
 
-.app-dialog-panel > p {
-  margin: 0 0 16px;
-  color: #68766c;
-  font-size: 14px;
-  line-height: 1.6;
+.app-dialog-panel>p {
+    margin: 0 0 16px;
+    color: #68766c;
+    font-size: 14px;
+    line-height: 1.6;
 }
 
 .app-dialog-panel ul {
-  display: grid;
-  gap: 10px;
-  margin: 0 0 24px;
-  padding: 0;
-  list-style: none;
+    display: grid;
+    gap: 10px;
+    margin: 0 0 24px;
+    padding: 0;
+    list-style: none;
 }
 
 .app-dialog-panel li {
-  position: relative;
-  padding: 11px 13px 11px 30px;
-  border-left: 2px solid #d94a4a;
-  background: #f7f3f0;
-  color: #a92b2b;
-  font-size: 13px;
-  line-height: 1.55;
+    position: relative;
+    padding: 11px 13px 11px 30px;
+    border-left: 2px solid #d94a4a;
+    background: #f7f3f0;
+    color: #a92b2b;
+    font-size: 13px;
+    line-height: 1.55;
 }
 
 .app-dialog-panel li::before {
-  position: absolute;
-  top: 11px;
-  left: 12px;
-  content: "!";
-  font-weight: 800;
+    position: absolute;
+    top: 11px;
+    left: 12px;
+    content: "!";
+    font-weight: 800;
 }
 
 .app-dialog-button {
-  min-width: 170px;
+    min-width: 170px;
 }
 
 body.dialog-open {
-  overflow: hidden;
+    overflow: hidden;
 }
 
 .field.is-invalid input,
 .field.is-invalid select,
 .field.is-invalid textarea {
-  border-color: #d72f36 !important;
-  box-shadow: 0 0 0 2px rgba(215, 47, 54, .09);
+    border-color: #d72f36 !important;
+    box-shadow: 0 0 0 2px rgba(215, 47, 54, .09);
 }
 
 .field-error {
-  display: block;
-  margin-top: 8px;
-  color: #c62828;
-  font-size: 12px;
-  line-height: 1.5;
+    display: block;
+    margin-top: 8px;
+    color: #c62828;
+    font-size: 12px;
+    line-height: 1.5;
 }
 
 @media (max-width: 620px) {
-  .app-dialog {
-    align-items: flex-end;
-    padding: 12px;
-  }
+    .app-dialog {
+        align-items: flex-end;
+        padding: 12px;
+    }
 
-  .app-dialog-panel {
-    width: 100%;
-    max-height: 85vh;
-    padding: 27px 22px 23px;
-  }
+    .app-dialog-panel {
+        width: 100%;
+        max-height: 85vh;
+        padding: 27px 22px 23px;
+    }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .app-dialog,
-  .app-dialog-panel {
-    transition: none !important;
-  }
+
+    .app-dialog,
+    .app-dialog-panel {
+        transition: none !important;
+    }
 }
+
 .developer-credit {
-  font-size: 10px;
-  color: #8a9689;
-  letter-spacing: 0.5px;
+    font-size: 10px;
+    color: #8a9689;
+    letter-spacing: 0.5px;
 }
 
 .developer-credit strong {
+    color: #173c2b;
+    font-weight: 700;
+}
+
+.developer-credit a {
   color: #173c2b;
   font-weight: 700;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.developer-credit a:hover {
+  color: #6b963f;
+  text-decoration: underline;
 }
