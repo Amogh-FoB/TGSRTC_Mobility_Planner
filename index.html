@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#173c2b">
+  <title>TGSRTC | Corporate Mobility Planner</title>
+  <link rel="icon" type="image/png" href="images/tgsrtc-logo.png">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="intro" id="intro" aria-label="TGSRTC Corporate Mobility Planner introduction">
+    <div class="intro-image"></div>
+    <div class="intro-content">
+      <div class="intro-mark">TGSRTC<span>✦</span></div>
+      <div class="intro-line"></div>
+      <div class="intro-title">MOVE<br><i>TOGETHER.</i></div>
+      <div class="intro-sub">CORPORATE MOBILITY · TGSRTC</div>
+      <div class="intro-road"><span></span></div>
+    </div>
+    <div class="intro-count">A SMARTER COMMUTE STARTS HERE</div>
+  </div>
+
+  <header class="site-header">
+    <a class="brand" href="#" aria-label="TGSRTC Corporate Mobility Planner home">
+      <img class="brand-logo" src="images/tgsrtc-logo.png" alt="TGSRTC logo">
+      <span><b>Corporate Mobility</b><small>WORKFORCE TRANSPORT PLANNER</small></span>
+    </a>
+    <div class="header-right"><span class="status-dot"></span> Planning workspace <span class="header-divider"></span><span>01 — 05</span></div>
+  </header>
+
+  <main>
+    <section class="masthead">
+      <div class="masthead-image"></div>
+      <div class="masthead-shade"></div>
+      <div class="masthead-content">
+        <div class="eyebrow light"><i></i> CORPORATE TRANSPORT PLANNING</div>
+        <h2>Bring your people<br>together. <em>Smarter.</em></h2>
+        <p>Tell us about your workforce and commute patterns. We’ll help you explore a TGSRTC bus solution for your organisation.</p>
+        <div class="masthead-tags"><span>01 / WORKFORCE</span><span>02 / ROUTES</span><span>03 / FLEET</span></div>
+      </div>
+      <div class="masthead-stamp"><b>TS</b><span>PUBLIC<br>TRANSPORT<br>FOR ALL</span></div>
+    </section>
+
+    <section class="workspace" id="workspace">
+      <aside class="side-rail">
+        <div class="rail-label">YOUR PLANNING JOURNEY</div>
+        <div class="step-list">
+          <div class="step active" data-step="1"><span class="step-num">01</span><span><b>Workforce</b><small>Company details</small></span><i></i></div>
+          <div class="step" data-step="2"><span class="step-num">02</span><span><b>Current setup</b><small>Existing transport</small></span><i></i></div>
+          <div class="step" data-step="3"><span class="step-num">03</span><span><b>Commute map</b><small>Areas & distances</small></span><i></i></div>
+          <div class="step" data-step="4"><span class="step-num">04</span><span><b>Choose your fleet</b><small>Bus category</small></span><i></i></div>
+          <div class="step" data-step="5"><span class="step-num">05</span><span><b>Your estimate</b><small>Cost & impact</small></span><i></i></div>
+        </div>
+        <div class="rail-note"><span class="rail-leaf">✳</span><b>Public transport<br>is a shared advantage.</b><small>One coordinated service can move many people with fewer individual vehicles.</small></div>
+      </aside>
+
+      <section class="form-panel">
+        <div class="panel-top"><div><span class="panel-overline" id="panelOverline">STEP 01 / 05</span><span class="panel-progress"><i id="progressBar"></i></span></div><span class="required-note">* Mandatory fields</span></div>
+
+        <form id="plannerForm" novalidate>
+          <section class="form-step active" data-page="1">
+            <div class="workforce-heading">
+              <div class="section-heading"><div class="section-kicker">01 — THE ORGANISATION / WORKFORCE PROFILE</div><h2>Start with<br>your <em>people.</em></h2><p>Give us a snapshot of your organisation. These details establish the scale and destination for your employee commute plan.</p></div>
+              <aside class="workforce-brief" aria-label="Step one overview">
+                <div class="brief-top"><span>PLANNING INPUT</span><span>01 / 05</span></div>
+                <div class="brief-number">01</div>
+                <div class="brief-title">Workforce<br>profile</div>
+                <div class="brief-rule"></div>
+                <p>Organisation details<br>Employee volume<br>Primary work location</p>
+                <div class="brief-foot"><i></i> REQUIRED TO BEGIN</div>
+              </aside>
+            </div>
+            <div class="workforce-fields-label"><span>ORGANISATION DETAILS</span><span>ALL FIELDS MARKED * ARE REQUIRED</span></div>
+            <div class="field-grid workforce-field-grid">
+              <label class="field full"><span>Company / organisation name</span><input id="company" type="text" placeholder="e.g. Your organisation"></label>
+              <label class="field"><span>How many employees need transport? <b>*</b></span><input id="employees" type="number" min="1" placeholder="Enter employee count" required></label>
+              <label class="field"><span>Office location <b>*</b></span><input id="office" type="text" placeholder="Office address or locality" required></label>
+            </div>
+            <div class="callout"><span>✳</span><p>This planner prepares an indicative estimate from the details you provide. Final routes, fleet availability and applicable terms are subject to TGSRTC confirmation.</p></div>
+            <div class="form-actions"><span class="action-hint">LET’S BUILD YOUR COMMUTE PLAN</span><button class="btn btn-primary" type="button" data-next>Continue <span>→</span></button></div>
+          </section>
+
+          <section class="form-step" data-page="2">
+            <div class="section-heading"><div class="section-kicker">02 — TODAY’S ARRANGEMENT</div><h2>How do your<br>employees <em>travel?</em></h2><p>We’ll use your current setup to calculate a meaningful cost comparison.</p></div>
+            <div class="question-block"><div class="question-title">Do you already provide company transport? <b>*</b></div><div class="choice-row">
+              <label class="choice-card"><input type="radio" name="existing" value="yes"><span class="choice-icon">↗</span><b>Yes, we do</b><small>We currently arrange employee transport.</small></label>
+              <label class="choice-card"><input type="radio" name="existing" value="no" checked><span class="choice-icon">＋</span><b>Not currently</b><small>We’re exploring a transport solution.</small></label>
+            </div></div>
+            <div id="existingDetails" class="conditional hidden">
+              <div class="question-title">What kind of transport do you provide?</div>
+              <div class="choice-pills">
+                <label><input type="checkbox" name="kind" value="cab"><span>Cabs</span></label>
+                <label><input type="checkbox" name="kind" value="bus"><span>Buses</span></label>
+              </div>
+              <div id="cabFields" class="detail-card hidden"><div class="detail-title"><span>01</span> CAB OPERATIONS</div><div class="field-grid">
+                <label class="field"><span>Employees using company cabs <b>*</b></span><input id="cabEmployees" type="number" min="0" placeholder="Number of employees"></label>
+                <label class="field"><span>Number of cabs deployed <b>*</b></span><input id="cabs" type="number" min="0" placeholder="Number of cabs"></label>
+                <label class="field full"><span>Current cab expenditure (₹)</span><input id="cabCost" type="number" min="0" placeholder="Enter monthly expenditure"></label>
+              </div></div>
+              <div id="busFields" class="detail-card hidden"><div class="detail-title"><span>02</span> BUS OPERATIONS</div><div class="field-grid">
+                <label class="field"><span>Employees using company buses <b>*</b></span><input id="busEmployees" type="number" min="0" placeholder="Number of employees"></label>
+                <label class="field"><span>Number of buses deployed <b>*</b></span><input id="buses" type="number" min="0" placeholder="Number of buses"></label>
+                <label class="field full"><span>Current bus expenditure (₹)</span><input id="busCost" type="number" min="0" placeholder="Enter monthly expenditure"></label>
+              </div></div>
+            </div>
+            <div class="form-actions"><button class="btn btn-back" type="button" data-back>← Back</button><button class="btn btn-primary" type="button" data-next>Continue <span>→</span></button></div>
+          </section>
+
+          <section class="form-step" data-page="3">
+            <div class="section-heading"><div class="section-kicker">03 — EMPLOYEE COMMUTE</div><h2>Map the places<br>your team <em>comes from.</em></h2><p>Add up to five employee clusters. For each area, enter either the one-way distance or the complete round-trip distance. We'll standardise it automatically for the estimate.</p></div>
+            <div class="office-chip"><span class="pin">⌖</span><span><small>OFFICE DESTINATION</small><b id="officePreview">Your office location</b></span><button type="button" id="editOffice">Edit</button></div>
+            <div class="route-heading"><span>EMPLOYEE CLUSTERS</span><span>UP TO 5 AREAS</span></div>
+            <div id="routeList">
+              <div class="route-row"><div class="route-index">01</div><label class="field"><span>Area / locality <b>*</b></span><input class="route-area" placeholder="e.g. Kukatpally"></label><label class="field"><span>Employees <b>*</b></span><input class="route-employees" type="number" min="1" placeholder="Count"></label><div class="field route-distance-field"><span>Route distance <b>*</b></span><div class="distance-controls"><input class="route-km" type="number" min="1" step="0.1" placeholder="e.g. 25"><select class="route-distance-type" aria-label="Distance type"><option value="one-way">One-way</option><option value="round-trip">Round trip</option></select></div></div><button class="remove-route" type="button" aria-label="Remove route">×</button><div class="route-normalized" aria-live="polite"><span class="route-normalized-label">DAILY DISTANCE USED IN ESTIMATE</span><b class="route-daily-km">— km/day</b><span class="route-tariff-band">Enter a distance to preview</span></div></div>
+            </div>
+            <button class="add-route" id="addRoute" type="button">＋ Add another employee area</button>
+            <div class="tariff-note"><b>How distance is counted</b><span>Choose One-way if you enter the distance from the area to the office; the planner doubles it for the daily return journey. Choose Round trip if your entered distance already includes both directions. TGSRTC's BOC tariff bands are applied to the resulting daily distance: 40–79 km or 80 km and above. Daily distances below 40 km need confirmation.</span></div>
+            <div class="form-actions"><button class="btn btn-back" type="button" data-back>← Back</button><button class="btn btn-primary" type="button" data-next>Choose your fleet <span>→</span></button></div>
+          </section>
+
+          <section class="form-step" data-page="4">
+            <div class="section-heading"><div class="section-kicker">04 — THE RIGHT VEHICLE</div><h2>Choose the fleet<br>that fits your <em>people.</em></h2><p>Select a bus category to see its capacity and applicable kilometre tariff.</p></div>
+            <div class="fleet-grid">
+              <label class="fleet-card selected" data-fleet="co"><input type="radio" name="fleet" value="co" checked>
+                <div class="fleet-photo"><img src="images/city-ordinary.jpg" alt="City Ordinary bus" onerror="this.style.display='none'"><div class="photo-fallback"><span>CO</span><small>ADD YOUR PHOTO<br>city-ordinary.jpg</small></div><span class="fuel-tag">DIESEL</span></div>
+                <div class="fleet-info"><div class="fleet-name">City Ordinary <small>CO / DIESEL</small></div><div class="fleet-specs"><span><b>45</b> seats</span><span><b>₹57</b> / km*</span></div><div class="fleet-select">SELECT VEHICLE <i>↗</i></div></div>
+              </label>
+              <label class="fleet-card" data-fleet="gco"><input type="radio" name="fleet" value="gco">
+                <div class="fleet-photo"><img src="images/green-city-ordinary.jpg" alt="Green City Ordinary bus"><div class="photo-fallback"><span>GCO</span><small>GREEN CITY ORDINARY</small></div><span class="fuel-tag electric">ELECTRIC</span></div>
+                <div class="fleet-info"><div class="fleet-name">Green City Ordinary <small>GREEN CO / ELECTRIC</small></div><div class="fleet-specs"><span><b>35</b> seats</span><span><b>₹57</b> / km*</span></div><div class="fleet-select">SELECT VEHICLE <i>↗</i></div></div>
+              </label>
+              <label class="fleet-card" data-fleet="me"><input type="radio" name="fleet" value="me">
+                <div class="fleet-photo"><img src="images/metro-express.jpeg" alt="Metro Express bus" onerror="this.style.display='none'"><div class="photo-fallback"><span>ME</span><small>ADD YOUR PHOTO<br>metro-express.jpg</small></div><span class="fuel-tag">DIESEL</span></div>
+                <div class="fleet-info"><div class="fleet-name">Metro Express <small>ME / DIESEL</small></div><div class="fleet-specs"><span><b>45</b> seats</span><span><b>₹62</b> / km*</span></div><div class="fleet-select">SELECT VEHICLE <i>↗</i></div></div>
+              </label>
+              <label class="fleet-card" data-fleet="gme"><input type="radio" name="fleet" value="gme">
+                <div class="fleet-photo"><img src="images/green-metro-express.jpg" alt="Green Metro Express bus"><div class="photo-fallback"><span>GME</span><small>GREEN METRO EXPRESS</small></div><span class="fuel-tag electric">ELECTRIC</span></div>
+                <div class="fleet-info"><div class="fleet-name">Green Metro Express <small>GREEN ME / ELECTRIC</small></div><div class="fleet-specs"><span><b>35</b> seats</span><span><b>₹62</b> / km*</span></div><div class="fleet-select">SELECT VEHICLE <i>↗</i></div></div>
+              </label>
+            </div>
+            <div class="fleet-footnote">* Displayed rates are for 40–79 km. For 80 km and above, CO / Green CO: ₹53/km; ME / Green ME: ₹57/km. Tariffs are from Circular No. 27/2022 dated 17.06.2022.</div>
+            <div class="assumption-row"><label class="field"><span>Operating days per month <b>*</b></span><input id="operatingDays" type="number" min="1" max="31" value="26"></label><div class="capacity-display"><small>SELECTED BUS CAPACITY</small><b id="capacityValue">45 <i>seats</i></b><span>Automatically set by vehicle type</span></div></div>
+            <div class="form-actions"><button class="btn btn-back" type="button" data-back>← Back</button><button class="btn btn-primary" type="button" id="calculateButton">Calculate my estimate <span>→</span></button></div>
+          </section>
+
+          <section class="form-step" data-page="5">
+            <div class="section-heading"><div class="section-kicker">05 — YOUR MOBILITY SNAPSHOT</div><h2>A clearer view of<br>your <em>opportunity.</em></h2><p>Indicative fleet and cost estimate based on the information entered.</p></div>
+            <div class="result-hero"><div class="result-label">ESTIMATED TGSRTC MONTHLY COST</div><div class="result-amount" id="resultCost">₹0</div><div class="result-sub" id="resultFleet">Selected fleet · —</div><div class="result-orbit"></div></div>
+            <div class="result-metrics">
+              <div class="result-metric"><small>BUSES REQUIRED</small><b id="resultBuses">0</b><span>Across entered clusters</span></div>
+              <div class="result-metric"><small>EMPLOYEES COVERED</small><b id="resultEmployees">0</b><span>From your area distribution</span></div>
+              <div class="result-metric"><small>MONTHLY COST DIFFERENCE</small><b id="resultSaving">—</b><span id="savingCaption">Against current expenditure</span></div>
+              <div class="result-metric"><small>CABS POTENTIALLY AVOIDED</small><b id="resultCabs">—</b><span>Indicative seat-equivalent estimate</span></div>
+              <div class="result-metric"><small>PROPOSED FLEET CO₂ / MONTH</small><b id="resultCarbon">—</b><span id="carbonCaption">Automatically estimated</span></div>
+            </div>
+            <section class="carbon-impact" aria-labelledby="carbonImpactTitle">
+              <div class="detail-title"><span>ENVIRONMENT</span> <strong id="carbonImpactTitle">Estimated carbon impact</strong></div>
+              <div id="carbonDetails" aria-live="polite"><p>Carbon estimates will be generated automatically from the commute and fleet details.</p></div>
+            </section>
+            <div class="result-table-wrap"><div class="table-title"><b>Route-wise cost breakdown</b><span>MONTHLY ESTIMATE</span></div><table><thead><tr><th>AREA</th><th>EMPLOYEES</th><th>BUSES</th><th>KM / DAY</th><th>MONTHLY COST</th></tr></thead><tbody id="resultRows"></tbody></table></div>
+            <div class="result-disclaimer" id="resultDisclaimer">Estimate is indicative and subject to TGSRTC confirmation.</div>
+            <div class="form-actions"><button class="btn btn-back" type="button" id="editPlan">← Edit plan</button><button class="btn btn-primary" type="button" id="printPlan">Print / Save PDF <span>↗</span></button></div>
+          </section>
+        </form>
+      </section>
+    </section>
+  </main>
+  <div class="app-dialog" id="appDialog" role="dialog" aria-modal="true" aria-labelledby="appDialogTitle" aria-describedby="appDialogMessage" aria-hidden="true">
+    <div class="app-dialog-panel">
+      <div class="app-dialog-mark" aria-hidden="true">!</div>
+      <div class="app-dialog-kicker">PLANNER CHECK</div>
+      <h2 id="appDialogTitle">A few details need attention</h2>
+      <p id="appDialogMessage">Please review the following before continuing.</p>
+      <ul id="appDialogList"></ul>
+      <button type="button" class="btn btn-primary app-dialog-button" id="appDialogClose">Review details <span>→</span></button>
+    </div>
+  </div>
+  <footer class="site-footer">
+  <span>TGSRTC CORPORATE MOBILITY PLANNER</span>
+  <span>MOVE PEOPLE. MOVE PROGRESS.</span>
+  <span class="developer-credit">Developed by <strong>Amogh A</strong></span>
+</footer>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
