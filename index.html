@@ -545,90 +545,122 @@
               </div>
             </section>
 
-            <section class="form-step" data-page="5">
-              <div class="section-heading">
-                <div class="section-kicker">05 — YOUR MOBILITY SNAPSHOT</div>
-                <h2>A clearer view of<br />your <em>opportunity.</em></h2>
-                <p>
-                  Indicative fleet and cost estimate based on the information
-                  entered.
-                </p>
+            <section class="form-step results-page" data-page="5">
+              <div class="results-heading">
+                <div>
+                  <div class="section-kicker">05 — MOBILITY PROPOSAL / ANALYSIS</div>
+                  <h2>Your commute plan,<br /><em>at a glance.</em></h2>
+                  <p>A decision-ready summary of the proposed TGSRTC service, based on the workforce and commute details entered.</p>
+                </div>
+                <div class="results-reference">
+                  <span>PLANNING OUTPUT</span>
+                  <b>05 <i>/ 05</i></b>
+                  <small>INDICATIVE ESTIMATE</small>
+                </div>
               </div>
+
               <div class="result-hero">
-                <div class="result-label">ESTIMATED TGSRTC MONTHLY COST</div>
-                <div class="result-amount" id="resultCost">₹0</div>
-                <div class="result-sub" id="resultFleet">
-                  Selected fleet · —
+                <div class="result-hero-copy">
+                  <div class="result-label">ESTIMATED MONTHLY TGSRTC COST</div>
+                  <div class="result-amount" id="resultCost">₹0</div>
+                  <div class="result-sub" id="resultFleet">Selected fleet · —</div>
+                </div>
+                <div class="result-hero-aside">
+                  <span class="hero-aside-mark">TGSRTC</span>
+                  <span>WORKFORCE<br />MOBILITY PLAN</span>
                 </div>
                 <div class="result-orbit"></div>
               </div>
-              <div class="result-metrics">
-                <div class="result-metric">
-                  <small>BUSES REQUIRED</small><b id="resultBuses">0</b
-                  ><span>Across entered clusters</span>
+
+              <section class="analysis-section operational-section">
+                <div class="analysis-section-heading">
+                  <div><span>01 / SERVICE DESIGN</span><h3>Proposed operating plan</h3></div>
+                  <p>Indicative deployment based on entered employee clusters and selected bus capacity.</p>
                 </div>
-                <div class="result-metric">
-                  <small>EMPLOYEES COVERED</small><b id="resultEmployees">0</b
-                  ><span>From your area distribution</span>
-                </div>
-                <div class="result-metric">
-                  <small>MONTHLY COST DIFFERENCE</small
-                  ><b id="resultSaving">—</b
-                  ><span id="savingCaption">Against current expenditure</span>
-                </div>
-                <div class="result-metric">
-                  <small>CABS POTENTIALLY AVOIDED</small><b id="resultCabs">—</b
-                  ><span>Indicative seat-equivalent estimate</span>
-                </div>
-                <div class="result-metric">
-                  <small>PROPOSED FLEET CO₂ / MONTH</small
-                  ><b id="resultCarbon">—</b
-                  ><span id="carbonCaption">Automatically estimated</span>
-                </div>
-              </div>
-              <section
-                class="carbon-impact"
-                aria-labelledby="carbonImpactTitle"
-              >
-                <div class="detail-title">
-                  <span>ENVIRONMENT</span>
-                  <strong id="carbonImpactTitle"
-                    >Estimated carbon impact</strong
-                  >
-                </div>
-                <div id="carbonDetails" aria-live="polite">
-                  <p>
-                    Carbon estimates will be generated automatically from the
-                    commute and fleet details.
-                  </p>
+                <div class="result-metrics">
+                  <div class="result-metric">
+                    <small>BUSES REQUIRED</small><b id="resultBuses">0</b>
+                    <span>Across the proposed service</span>
+                  </div>
+                  <div class="result-metric">
+                    <small>EMPLOYEES COVERED</small><b id="resultEmployees">0</b>
+                    <span>From entered commute areas</span>
+                  </div>
+                  <div class="result-metric">
+                    <small>CABS POTENTIALLY AVOIDED</small><b id="resultCabs">—</b>
+                    <span>Based on the share of cab users shifted</span>
+                  </div>
+                  <div class="result-metric">
+                    <small>PROPOSED FLEET CO₂ / MONTH</small><b id="resultCarbon">—</b>
+                    <span id="carbonCaption">Estimated proposed fleet CO₂ / month</span>
+                  </div>
                 </div>
               </section>
-              <div class="result-table-wrap">
-                <div class="table-title">
-                  <b>Route-wise cost breakdown</b><span>MONTHLY ESTIMATE</span>
+
+              <section class="analysis-section financial-section">
+                <div class="analysis-section-heading">
+                  <div><span>02 / FINANCIAL OUTLOOK</span><h3>What could the change cost?</h3></div>
+                  <p>Compare the proposed TGSRTC estimate with the current monthly transport expenditure entered.</p>
                 </div>
-                <table>
-                  <thead>
-                    <tr>
-                      <th>AREA</th>
-                      <th>EMPLOYEES</th>
-                      <th>BUSES</th>
-                      <th>KM / DAY</th>
-                      <th>MONTHLY COST</th>
-                    </tr>
-                  </thead>
-                  <tbody id="resultRows"></tbody>
-                </table>
-              </div>
-              <div class="result-disclaimer" id="resultDisclaimer">
-                Estimate is indicative and subject to TGSRTC confirmation.
-              </div>
-              <div class="form-actions">
-                <button class="btn btn-back" type="button" id="editPlan">
-                  ← Edit plan</button
-                ><button class="btn btn-primary" type="button" id="printPlan">
-                  Print / Save PDF <span>↗</span>
-                </button>
+                <div class="comparison-panel">
+                  <div class="comparison-column">
+                    <small>CURRENT MONTHLY EXPENDITURE</small>
+                    <b id="comparisonCurrent">Not provided</b>
+                    <span>Existing company transport</span>
+                  </div>
+                  <div class="comparison-arrow" aria-hidden="true">→</div>
+                  <div class="comparison-column proposed">
+                    <small>PROPOSED TGSRTC COST</small>
+                    <b id="comparisonProposed">₹0</b>
+                    <span>Based on the selected fleet</span>
+                  </div>
+                  <div class="comparison-result">
+                    <small id="comparisonStatus">MONTHLY DIFFERENCE</small>
+                    <b id="comparisonDifference">—</b>
+                    <span id="savingCaption">Enter current monthly spend to compare</span>
+                  </div>
+                </div>
+                <p class="comparison-note" id="comparisonNote">A like-for-like comparison depends on complete and comparable current expenditure inputs.</p>
+              </section>
+
+              <section class="analysis-section environmental-section">
+                <div class="analysis-section-heading">
+                  <div><span>03 / ENVIRONMENTAL OUTLOOK</span><h3>Estimated carbon impact</h3></div>
+                  <p>Indicative operational emissions using standard proxy factors, not measured fleet data.</p>
+                </div>
+                <div class="carbon-impact" aria-labelledby="carbonImpactTitle">
+                  <div class="carbon-impact-head">
+                    <span class="carbon-symbol">CO₂</span>
+                    <div><strong id="carbonImpactTitle">Emissions comparison</strong><small>MONTHLY ESTIMATE</small></div>
+                  </div>
+                  <div id="carbonDetails" aria-live="polite">
+                    <p>Carbon estimates will be generated automatically from the commute and fleet details.</p>
+                  </div>
+                </div>
+              </section>
+
+              <section class="analysis-section route-section">
+                <div class="analysis-section-heading">
+                  <div><span>04 / ROUTE PLAN</span><h3>Route-wise cost breakdown</h3></div>
+                  <p>Monthly estimate by independent route or combined shared corridor.</p>
+                </div>
+                <div class="result-table-wrap">
+                  <div class="table-title"><b>Service and cost schedule</b><span>MONTHLY ESTIMATE</span></div>
+                  <table>
+                    <thead><tr><th>AREA / CORRIDOR</th><th>EMPLOYEES</th><th>BUSES</th><th>KM / DAY</th><th>MONTHLY COST</th></tr></thead>
+                    <tbody id="resultRows"></tbody>
+                  </table>
+                </div>
+              </section>
+
+              <section class="assumptions-panel">
+                <div class="assumptions-heading"><span>05 / BASIS OF ESTIMATE</span><b>Assumptions & important notes</b></div>
+                <p id="resultDisclaimer">Estimate is indicative and subject to TGSRTC confirmation.</p>
+              </section>
+
+              <div class="results-actions">
+                <button class="btn btn-back" type="button" id="editPlan">← Edit plan</button>
+                <button class="btn btn-primary" type="button" id="printPlan">Print / Save PDF <span>↗</span></button>
               </div>
             </section>
           </form>

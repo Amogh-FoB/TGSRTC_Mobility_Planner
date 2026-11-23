@@ -586,14 +586,48 @@ function calculate() {
   $("#resultBuses").textContent = busCount;
   $("#resultEmployees").textContent = covered.toLocaleString("en-IN");
 
-  $("#resultSaving").textContent =
-    hasCurrentSpend ? money(Math.abs(currentSpend - monthly)) : "—";
+  // The redesigned analysis page no longer displays the legacy resultSaving
+  // metric. Keep it updated only when that legacy element exists.
+  const legacySaving = $("#resultSaving");
+  if (legacySaving) {
+    legacySaving.textContent =
+      hasCurrentSpend ? money(Math.abs(currentSpend - monthly)) : "—";
+  }
 
   $("#savingCaption").textContent = hasCurrentSpend
     ? (currentSpend >= monthly
       ? "Potential monthly saving"
       : "Estimated additional monthly cost")
     : "Enter current monthly spend to compare";
+
+  // Populate the dedicated financial comparison in the redesigned results view.
+  const comparisonCurrent = $("#comparisonCurrent");
+  const comparisonProposed = $("#comparisonProposed");
+  const comparisonDifference = $("#comparisonDifference");
+  const comparisonStatus = $("#comparisonStatus");
+  const comparisonNote = $("#comparisonNote");
+
+  if (comparisonCurrent) {
+    comparisonCurrent.textContent = hasCurrentSpend ? money(currentSpend) : "Not provided";
+  }
+  if (comparisonProposed) comparisonProposed.textContent = money(monthly);
+  if (comparisonDifference) {
+    comparisonDifference.textContent = hasCurrentSpend
+      ? money(Math.abs(currentSpend - monthly))
+      : "—";
+  }
+  if (comparisonStatus) {
+    comparisonStatus.textContent = !hasCurrentSpend
+      ? "MONTHLY DIFFERENCE"
+      : currentSpend >= monthly
+        ? "POTENTIAL MONTHLY SAVING"
+        : "ESTIMATED ADDITIONAL COST";
+  }
+  if (comparisonNote) {
+    comparisonNote.textContent = hasCurrentSpend
+      ? "Comparison uses the current monthly expenditure entered. Confirm that all existing transport costs and operating assumptions are included."
+      : "A current monthly expenditure was not provided, so the planner cannot claim a saving or calculate a cost difference.";
+  }
 
   $("#resultCabs").textContent = avoided === null ? "—" : avoided;
 
@@ -823,7 +857,10 @@ function exportEstimatePdf() {
     if ($('input[name="kind"][value="cab"]').checked) types.push(`${$("#cabs").value || 0} cabs; monthly spend ${moneyText($("#cabCost").value)}`);
     if ($('input[name="kind"][value="bus"]').checked) types.push(`${$("#buses").value || 0} buses; monthly spend ${moneyText($("#busCost").value)}`);
     paragraph(types.length ? types.join(". ") : "Existing transport was reported, but no vehicle type was selected.", 8, ink);
-    paragraph(`Estimated monthly cost difference: ${$("#resultSaving").textContent.trim()} (${$("#savingCaption").textContent.trim()}).`, 8, ink);
+    paragraph(`Current monthly expenditure entered: ${$("#comparisonCurrent")?.textContent.trim() || "Not provided"}. Proposed TGSRTC monthly estimate: ${$("#comparisonProposed")?.textContent.trim() || $("#resultCost").textContent.trim()}.`, 8, ink);
+    const savingValue = $("#resultSaving")?.textContent.trim() ||
+    $("#comparisonDifference")?.textContent.trim() || "—";
+  paragraph(`Estimated monthly cost difference: ${savingValue} (${$("#savingCaption").textContent.trim()}).`, 8, ink);
   } else {
     paragraph("No existing company transport was reported. A current-cost comparison and baseline carbon savings are therefore not claimed.", 8, muted);
   }
