@@ -944,6 +944,154 @@ function calculate() {
 }
 
 
+
+// Export all entered planner details and the calculated outputs to a
+// multi-sheet Excel workbook. Uses SheetJS loaded by index.html.
+function exportPlannerToExcel() {
+  if (!window.XLSX) {
+    showAppDialog(
+      "Excel export is unavailable",
+      "The Excel workbook library could not be loaded. Check your internet connection and refresh the planner."
+    );
+    return;
+  }
+
+  const textValue = selector => $(selector)?.value?.trim() || "";
+  const checked = selector => Boolean($(selector)?.checked);
+  const selectedExisting = $('input[name="existing"]:checked')?.value || "no";
+  const selectedKinds = $$('input[name="kind"]:checked').map(input =>
+    input.value === "cab" ? "Cabs" : "Buses"
+  );
+  const selectedRate = rates[selectedFleet] || {};
+  const days = Number(textValue("#operatingDays")) || 0;
+
+  const workbook = XLSX.utils.book_new();
+  const addSheet = (name, rows, widths = [], headerRow = 1, mergeTitle = false) => {
+    const sheet = XLSX.utils.aoa_to_sheet(rows);
+    if (widths.length) sheet["!cols"] = widths.map(wch => ({ wch }));
+
+    // Apply filters to the real column-heading row, never to a report title.
+    // headerRow is 1-based; filter continues through the last populated row.
+    const range = XLSX.utils.decode_range(sheet["!ref"]);
+    if (headerRow >= 1 && headerRow <= range.e.r + 1) {
+      const filterRange = {
+        s: { r: headerRow - 1, c: range.s.c },
+        e: { r: range.e.r, c: range.e.c }
+      };
+      sheet["!autofilter"] = { ref: XLSX.utils.encode_range(filterRange) };
+    }
+
+    // Keep section titles as a merged title row above the actual headings.
+    if (mergeTitle) {
+      sheet["!merges"] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: Math.max(1, range.e.c) } }];
+    }
+    XLSX.utils.book_append_sheet(workbook, sheet, name);
+  };
+
+  // Sheet 1 — organisation and headline proposal details.
+  addSheet("Proposal Overview", [
+    ["TGSRTC CORPORATE MOBILITY PLANNER"],
+    ["Proposal overview"],
+    ["Field", "Entered / calculated value"],
+    ["Organisation", textValue("#company") || "Not provided"],
+    ["Employees requiring transport", Number(textValue("#employees")) || 0],
+    ["Office location", textValue("#office") || "Not provided"],
+    ["Operating days per month", days],
+    ["Selected fleet", selectedRate.name || "Not selected"],
+    ["Bus seating capacity", selectedRate.capacity || ""],
+    ["Buses required", $("#resultBuses")?.textContent.trim() || ""],
+    ["Employees covered", $("#resultEmployees")?.textContent.trim() || ""],
+    ["Estimated monthly TGSRTC cost", $("#resultCost")?.textContent.trim() || ""],
+    ["Generated on", new Date().toLocaleString("en-IN")]
+  ], [34, 54], 3, true);
+
+  // Sheet 2 — current company transport inputs.
+  const existingRows = [
+    ["EXISTING TRANSPORT DETAILS"],
+    ["Field", "Value"],
+    ["Company transport currently provided", selectedExisting === "yes" ? "Yes" : "No"],
+    ["Transport types selected", selectedKinds.join(", ") || "None"],
+    ["Employees using company cabs", selectedKinds.includes("Cabs") ? (Number(textValue("#cabEmployees")) || 0) : 0],
+    ["Number of cabs deployed", selectedKinds.includes("Cabs") ? (Number(textValue("#cabs")) || 0) : 0],
+    ["Current monthly cab expenditure (INR)", selectedKinds.includes("Cabs") ? (Number(textValue("#cabCost")) || 0) : 0],
+    ["Employees using company buses", selectedKinds.includes("Buses") ? (Number(textValue("#busEmployees")) || 0) : 0],
+    ["Number of existing buses deployed", selectedKinds.includes("Buses") ? (Number(textValue("#buses")) || 0) : 0],
+    ["Current monthly bus expenditure (INR)", selectedKinds.includes("Buses") ? (Number(textValue("#busCost")) || 0) : 0],
+    ["Current monthly expenditure used in comparison", $("#comparisonCurrent")?.textContent.trim() || "Not provided"]
+  ];
+  addSheet("Existing Transport", existingRows, [46, 42], 2, true);
+
+  // Sheet 3 — all commute-area entries, including shared-corridor choices.
+  const routeRows = [[
+    "Area / locality", "Employees", "Entered distance (km)",
+    "Distance type", "Calculated daily distance (km)",
+    "Fare distance used (km)", "Route group", "Route arrangement"
+  ]];
+  getRoutes().forEach((route, index) => {
+    const row = $$(".route-row")[index];
+    const routeGroup = row?.dataset.routeGroup || `route-${index + 1}`;
+    const routeChoice = index === 0
+      ? "First pickup area"
+      : (row?.dataset.routeChoice === "previous" ? "Added to previous route" : "Independent route");
+    routeRows.push([
+      route.area,
+      route.employees,
+      route.enteredKm,
+      route.distanceType === "one-way" ? "One-way" : "Round trip",
+      Number(route.dailyKm.toFixed(1)),
+      Number(route.fareKm.toFixed(1)),
+      routeGroup,
+      routeChoice
+    ]);
+  });
+  addSheet("Commute Areas", routeRows, [25, 13, 20, 18, 25, 21, 18, 25], 1, false);
+
+  // Sheet 4 — selected fleet, tariff and final route-wise deployment/cost.
+  const fleetRows = [
+    ["PROPOSED FLEET"],
+    ["Selected vehicle", selectedRate.name || ""],
+    ["Fuel / power type", ["gco", "gme", "mp"].includes(selectedFleet) ? "Electric" : "Diesel"],
+    ["Air conditioning", selectedFleet === "mp" ? "AC" : (selectedFleet === "md" ? "Non-AC" : "As specified by category")],
+    ["Seating capacity", selectedRate.capacity || ""],
+    ["Tariff, 40–79 km (INR / km)", selectedRate.short || ""],
+    ["Tariff, 80 km and above (INR / km)", selectedRate.long || ""],
+    ["Operating days per month", days],
+    [],
+    ["ROUTE-WISE DEPLOYMENT AND COST"],
+    ["Area / corridor", "Employees", "Buses required", "Daily km", "Monthly cost"]
+  ];
+  $$("#resultRows tr").forEach(tr => {
+    fleetRows.push([...tr.querySelectorAll("td")].map(td => td.textContent.trim()));
+  });
+  addSheet("Proposed Fleet", fleetRows, [32, 15, 16, 14, 22], 11, true);
+
+  // Sheet 5 — financial, carbon and static vehicle-footprint outputs.
+  const impactRows = [
+    ["CALCULATED IMPACT SUMMARY"],
+    ["Metric", "Value"],
+    ["Current monthly transport expenditure", $("#comparisonCurrent")?.textContent.trim() || "Not provided"],
+    ["Proposed TGSRTC monthly cost", $("#comparisonProposed")?.textContent.trim() || $("#resultCost")?.textContent.trim() || ""],
+    ["Monthly cost difference / saving", $("#comparisonDifference")?.textContent.trim() || "Not available"],
+    ["Cost comparison status", $("#comparisonStatus")?.textContent.trim() || ""],
+    ["Proposed fleet CO2 per month", $("#resultCarbon")?.textContent.trim() || ""],
+    ["Carbon estimate details", $("#carbonDetails")?.innerText.trim().replace(/\s+/g, " ") || ""],
+    ["Existing vehicle footprint", $("#roadSpaceExisting")?.textContent.trim() || ""],
+    ["Proposed TGSRTC vehicle footprint", $("#roadSpaceProposed")?.textContent.trim() || ""],
+    ["Road-space difference", $("#roadSpaceDifference")?.textContent.trim() || ""],
+    ["Road-space comparison status", $("#roadSpaceStatus")?.textContent.trim() || ""],
+    ["Road-space methodology", $("#roadSpaceNote")?.textContent.trim() || ""],
+    ["Estimate assumptions", $("#resultDisclaimer")?.textContent.trim() || ""]
+  ];
+  addSheet("Impact Summary", impactRows, [42, 100], 2, true);
+
+  const company = textValue("#company") || "Organisation";
+  const safeName = company.normalize("NFKD").replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "").toLowerCase() || "organisation";
+  XLSX.writeFile(workbook, `TGSRTC-Mobility-Details-${safeName}.xlsx`);
+}
+
+$("#exportExcel")?.addEventListener("click", exportPlannerToExcel);
+
+
 // Generate a branded, downloadable PDF report (independent of browser print styles).
 function exportEstimatePdf() {
   // Prefer the branded jsPDF report when the library is available.
