@@ -2,9 +2,11 @@ const $ = (s, root = document) => root.querySelector(s);
 const $$ = (s, root = document) => [...root.querySelectorAll(s)];
 const rates = {
   co: { name: "City Ordinary", capacity: 45, short: 57, long: 53 },
-  gco: { name: "Green City Ordinary", capacity: 35, short: 57, long: 53 },
+  gco: { name: "Green City Ordinary", capacity: 35, short: 83, long: 81 },
   me: { name: "Metro Express", capacity: 45, short: 62, long: 57 },
-  gme: { name: "Green Metro Express", capacity: 35, short: 62, long: 57 }
+  gme: { name: "Green Metro Express", capacity: 35, short: 83, long: 81 },
+  md: { name: "Metro Deluxe", capacity: 45, short: 62, long: 57 },
+  mp: { name: "Metro Premium", capacity: 35, short: 87, long: 85 }
 };
 let currentPage = 1;
 let selectedFleet = "co";
@@ -195,6 +197,72 @@ groupingStyle.textContent = `
 `;
 document.head.append(groupingStyle);
 updateRouteGroupingHint();
+
+const carbonSceneStyle = document.createElement("style");
+carbonSceneStyle.textContent = `
+  .carbon-estimate-summary{display:grid;grid-template-columns:minmax(210px,.8fr) minmax(0,1.5fr);gap:18px;padding:18px;background:#f3f7ef;border:1px solid #dfe9d8;border-radius:8px;margin:10px 0 22px}
+  .carbon-estimate-main{display:flex;flex-direction:column;justify-content:center;gap:8px}
+  .carbon-estimate-main>strong{font:800 clamp(27px,3vw,38px)/1.05 Manrope,sans-serif;color:#173c2b;letter-spacing:-1px}
+  .carbon-estimate-main>span:last-child{font-size:10px;line-height:1.5;color:#718071}
+  .carbon-estimate-breakdown{border-left:1px solid #d6e2cf;padding-left:18px}
+  .carbon-estimate-breakdown p{font-size:10px;line-height:1.6;color:#6f7d70;margin:4px 0 8px}
+  .carbon-scenes-heading{margin:20px 0 10px}
+  .carbon-scenes-heading>span{font-size:8px;font-weight:800;letter-spacing:1.5px;color:#78906e}
+  .carbon-scenes-heading h4{font:800 17px Manrope,sans-serif;color:#173c2b;margin:6px 0}
+  .carbon-scenes-heading p{font-size:10px;color:#788278;margin:0}
+  .carbon-scenes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:12px}
+  .carbon-scene{min-width:0;overflow:hidden;border:1px solid #e1e8dc;border-radius:9px;background:#fff}
+  .carbon-scene-visual{height:158px;position:relative;overflow:hidden;background:#e9eee6}
+  .carbon-scene-visual>img{width:100%;height:100%;object-fit:cover;display:block}
+  .carbon-scene-tag{position:absolute;left:12px;top:12px;background:#173c2b;color:#fff;padding:7px 9px;font-size:8px;font-weight:800;letter-spacing:1.1px}
+  .carbon-scene-copy{padding:16px}
+  .carbon-scene-kicker{display:block;color:#78906e;font-size:8px;font-weight:800;letter-spacing:1.4px;margin-bottom:9px}
+  .carbon-scene-number{display:block;color:#173c2b;font:800 31px/1.1 Manrope,sans-serif;letter-spacing:-1px}
+  .carbon-scene-number small{font:700 11px 'DM Sans',sans-serif;letter-spacing:0;color:#627264}
+  .carbon-scene-title{display:block;color:#173c2b;font:800 19px/1.2 Manrope,sans-serif;letter-spacing:-.4px}
+  .carbon-scene-copy p{font-size:10px;line-height:1.65;color:#6f7d70;margin:10px 0 0}
+  .carbon-scene-source{display:block;margin-top:12px;color:#8b9489;font-size:8px;line-height:1.5}
+  .carbon-scene-dual-visual{display:grid;grid-template-columns:1fr 1fr;gap:2px}
+  .carbon-scene-dual-visual>div{position:relative;min-width:0;overflow:hidden}
+  .carbon-scene-dual-visual>div img{width:100%;height:100%;object-fit:cover;display:block}
+  .carbon-scene-dual-visual>div span{position:absolute;bottom:9px;left:9px;background:#173c2b;color:#fff;padding:5px 7px;font-size:8px;font-weight:800;letter-spacing:1px}
+  .carbon-scenes-note{margin:13px 0 0;padding:10px 12px;border-left:2px solid #9ab66d;background:#f4f7f0;color:#778276;font-size:9px;line-height:1.6}
+  @media(max-width:700px){.carbon-scenes{grid-template-columns:1fr}.carbon-scene-visual{height:175px}.carbon-estimate-summary{grid-template-columns:1fr}.carbon-estimate-breakdown{border-left:0;border-top:1px solid #d6e2cf;padding:12px 0 0}}
+`;
+document.head.append(carbonSceneStyle);
+
+const carbonOutlookStyle = document.createElement("style");
+carbonOutlookStyle.textContent = `
+  .carbon-impact{width:100%;max-width:none}
+  #carbonDetails{display:block!important;width:100%;max-width:none}
+  .carbon-outlook{width:100%;margin:12px 0 24px}
+  .carbon-outlook-heading{display:flex;justify-content:space-between;align-items:end;gap:24px;margin:0 0 18px}
+  .carbon-outlook-heading span,.carbon-outlook-cell>span,.carbon-outlook-formula>span{display:block;color:#7b9072;font-size:9px;font-weight:800;letter-spacing:1.35px;line-height:1.5}
+  .carbon-outlook-heading h4{margin:6px 0 0;color:#173c2b;font:800 clamp(21px,2.3vw,29px)/1.2 Manrope,sans-serif}
+  .carbon-outlook-heading>p{max-width:360px;margin:0;color:#879187;font-size:11px;line-height:1.6;text-align:right}
+  .carbon-outlook-grid{display:grid;grid-template-columns:minmax(0,1.15fr) 54px minmax(0,1fr) minmax(0,1fr);border:1px solid #dce5d8;background:#fff}
+  .carbon-outlook-cell{min-width:0;padding:clamp(15px,1.8vw,25px);border-right:1px solid #dce5d8}
+  .carbon-outlook-arrow{display:flex;align-items:center;justify-content:center;color:#9aa99a;font-size:32px;background:#fafbf9}
+  .carbon-outlook-breakdown{margin-top:10px;border-top:1px solid #e2e9df}
+  .carbon-outlook-breakdown p{margin:8px 0 0;font-size:10px;line-height:1.55}
+  .carbon-outlook-breakdown b{color:#314d3b}
+  .carbon-outlook-cell:last-child{border-right:0;background:#f1f6ed}
+  .carbon-outlook-cell strong{display:block;margin:16px 0 3px;color:#173c2b;font:800 clamp(22px,2.35vw,36px)/1.1 Manrope,sans-serif;letter-spacing:-1.1px;overflow-wrap:anywhere}
+  .carbon-outlook-cell>small{font-size:11px;color:#7c897d}
+  .carbon-outlook-cell p{margin:12px 0 0;color:#839084;font-size:10px;line-height:1.55}
+  .carbon-outlook-proposed-cell{background:#f7f9f5}
+  .carbon-outlook-proposed-cell strong{color:#24583d}
+  .carbon-outlook-change strong{color:#356c43}
+  .carbon-outlook-formula{margin-top:14px;padding:15px 18px;background:#f5f7f3;border-left:3px solid #91ae72}
+  .carbon-outlook-formula p{margin:7px 0 0;color:#7c897d;font-size:10px;line-height:1.6}
+  .carbon-outlook-note{margin:12px 0 0;color:#818c80;font-size:10px;line-height:1.65}
+  .carbon-outlook>p:last-child{display:none}
+  @media(max-width:1050px){.carbon-outlook-grid{grid-template-columns:minmax(0,1fr) 42px minmax(0,1fr)}.carbon-outlook-change{grid-column:1/-1;border-top:1px solid #dce5d8}.carbon-outlook-cell:nth-child(3){border-right:0}}
+  @media(max-width:600px){.carbon-outlook-heading{display:block}.carbon-outlook-heading>p{text-align:left;margin-top:8px}.carbon-outlook-grid{grid-template-columns:1fr}.carbon-outlook-arrow{height:34px;transform:rotate(90deg);border-bottom:1px solid #dce5d8}.carbon-outlook-cell{border-right:0!important;border-bottom:1px solid #dce5d8}.carbon-outlook-cell:last-child{border-bottom:0}.carbon-outlook-change{grid-column:auto}.carbon-outlook-formula{padding:13px 14px}}
+`;
+document.head.append(carbonOutlookStyle);
+
+
 
 const tariffNote = $(".tariff-note span");
 if (tariffNote) {
@@ -586,8 +654,6 @@ function calculate() {
   $("#resultBuses").textContent = busCount;
   $("#resultEmployees").textContent = covered.toLocaleString("en-IN");
 
-  // The redesigned analysis page no longer displays the legacy resultSaving
-  // metric. Keep it updated only when that legacy element exists.
   const legacySaving = $("#resultSaving");
   if (legacySaving) {
     legacySaving.textContent =
@@ -631,28 +697,30 @@ function calculate() {
 
   $("#resultCabs").textContent = avoided === null ? "—" : avoided;
 
-  // Indicative carbon model: standard proxy factors, not user-entered factors.
-  // Actual daily commute distance is used; the 40 km fare minimum is excluded.
-  const totalRouteEmployees = routes.reduce((sum, r) => sum + r.employees, 0);
-  const weightedDailyKm = totalRouteEmployees > 0
-    ? routes.reduce((sum, r) => sum + r.employees * r.dailyKm, 0) / totalRouteEmployees
-    : 0;
-  const cabCount = Number($("#cabs").value) || 0;
-  const currentBusCount = Number($("#buses").value) || 0;
-  const currentCabEmployees = Number($("#cabEmployees").value) || 0;
-  const currentBusEmployees = Number($("#busEmployees").value) || 0;
-
-  // Indicative India-oriented proxy assumptions. Replace with TGSRTC/company
-  // measured factors when verified operational data becomes available.
+  // Indicative bus-kilometre model using the two reference figures selected
+  // for this planner: conventional diesel 1.5 and electric 0.9 kg CO2/bus-km.
+  // The electric figure includes grid-related emissions as reported by the
+  // Humans of EV reference. Actual TGSRTC fleet measurements may differ.
   const emission = {
     petrolCabKgPerVehicleKm: 0.153,
     cabOccupancy: 2.8,
     busOccupancy: 38,
-    dieselBusKgPerPassengerKm: 0.015161,
-    gridKgPerKwh: 0.675,
-    electricBusKwhPerKm: 1
+    dieselBusKgPerBusKm: 1.5,
+    electricBusKgPerBusKm: 0.9
   };
 
+  const totalRouteEmployees = routes.reduce((sum, r) => sum + r.employees, 0);
+  const weightedDailyKm = totalRouteEmployees > 0
+    ? routes.reduce((sum, r) => sum + r.employees * r.dailyKm, 0) / totalRouteEmployees
+    : 0;
+  const hasCabExisting = $('input[name="existing"]:checked').value === "yes" &&
+    $('input[name="kind"][value="cab"]').checked;
+  const hasBusExisting = $('input[name="existing"]:checked').value === "yes" &&
+    $('input[name="kind"][value="bus"]').checked;
+  const cabCount = hasCabExisting ? (Number($("#cabs").value) || 0) : 0;
+  const currentBusCount = hasBusExisting ? (Number($("#buses").value) || 0) : 0;
+  const currentCabEmployees = hasCabExisting ? (Number($("#cabEmployees").value) || 0) : 0;
+  const currentBusEmployees = hasBusExisting ? (Number($("#busEmployees").value) || 0) : 0;
   const activeCabs = currentCabEmployees > 0
     ? Math.min(cabCount, Math.ceil(currentCabEmployees / emission.cabOccupancy))
     : cabCount;
@@ -660,41 +728,135 @@ function calculate() {
     ? Math.min(currentBusCount, Math.ceil(currentBusEmployees / emission.busOccupancy))
     : currentBusCount;
 
-  const hasCurrentTransport =
-    $('input[name="existing"]:checked').value === "yes" &&
-    (activeCabs > 0 || activeCurrentBuses > 0);
-
+  const hasCurrentTransport = hasCabExisting || hasBusExisting;
+  // Existing transport uses the employee-weighted proposed-route distance as
+  // a proxy because actual existing vehicle-kilometres are not collected.
   const currentCabKgPerDay = activeCabs * weightedDailyKm * emission.petrolCabKgPerVehicleKm;
-  const currentBusPassengers = currentBusEmployees > 0
-    ? currentBusEmployees
-    : activeCurrentBuses * emission.busOccupancy;
-  const currentBusKgPerDay = currentBusPassengers * weightedDailyKm * emission.dieselBusKgPerPassengerKm;
-  const currentKgPerDay = currentCabKgPerDay + currentBusKgPerDay;
+  const currentBusKgPerDay = activeCurrentBuses * weightedDailyKm * emission.dieselBusKgPerBusKm;
+  const currentCabMonthlyKg = currentCabKgPerDay * days;
+  const currentBusMonthlyKg = currentBusKgPerDay * days;
+  const currentMonthlyKg = currentCabMonthlyKg + currentBusMonthlyKg;
 
-  const proposedPassengerKmPerDay = routes.reduce(
-    (sum, r) => sum + r.employees * r.dailyKm, 0
-  );
-  const isElectricFleet = selectedFleet === "gco" || selectedFleet === "gme";
-  const proposedKgPerDay = isElectricFleet
-    ? busCount * priced.reduce((sum, r) => sum + r.dailyKm, 0) *
-    emission.electricBusKwhPerKm * emission.gridKgPerKwh
-    : proposedPassengerKmPerDay * emission.dieselBusKgPerPassengerKm;
+  const isElectricFleet = ["gco", "gme", "mp"].includes(selectedFleet);
+  const proposedBusKmPerDay = priced.reduce((sum, r) => sum + r.buses * r.dailyKm, 0);
+  const proposedBusFactor = isElectricFleet
+    ? emission.electricBusKgPerBusKm
+    : emission.dieselBusKgPerBusKm;
+  const proposedKgPerDay = proposedBusKmPerDay * proposedBusFactor;
   const proposedMonthlyKg = proposedKgPerDay * days;
+  const monthlyDifferenceKg = currentMonthlyKg - proposedMonthlyKg;
+  const formatKg = value => Math.round(value).toLocaleString("en-IN");
+  const formatKm = value => Number(value).toLocaleString("en-IN", { maximumFractionDigits: 1 });
+  const changeLabel = monthlyDifferenceKg >= 0
+    ? "POTENTIAL MONTHLY CO₂ SAVING"
+    : "ESTIMATED MONTHLY CO₂ INCREASE";
 
-  $("#resultCarbon").textContent =
-    `${Math.round(proposedMonthlyKg).toLocaleString("en-IN")} kg`;
-  $("#carbonCaption").textContent = "Estimated proposed fleet CO₂ / month";
+  // Keep the dynamic emissions estimate visible in the results summary.
+  const carbonMetric = $("#resultCarbon")?.closest(".result-metric");
+  if (carbonMetric) carbonMetric.classList.remove("hidden");
+  $("#resultCarbon").textContent = `${Math.round(proposedMonthlyKg).toLocaleString("en-IN")} kg`;
+  $("#carbonCaption").textContent = `Proposed ${isElectricFleet ? "electric" : "diesel"} fleet · ${days} operating days`;
 
+  // Carbon outlook: four sequential figures — existing cabs, existing buses,
+  // proposed TGSRTC fleet, and the resulting indicative saving/increase.
+  if ($("#carbonImpactTitle")) {
+    $("#carbonImpactTitle").textContent = "What could the emissions reduction be?";
+  }
   const carbonDetails = $("#carbonDetails");
   if (carbonDetails) {
-    const comparison = hasCurrentTransport
-      ? `<p><strong>Estimated current transport:</strong> ${Math.round(currentKgPerDay * days).toLocaleString("en-IN")} kg CO₂/month</p>
-         <p><strong>Indicative difference:</strong> ${Math.round((currentKgPerDay - proposedKgPerDay) * days).toLocaleString("en-IN")} kg CO₂/month ${currentKgPerDay >= proposedKgPerDay ? "potentially avoided" : "additional"}</p>`
-      : `<p><strong>Current baseline:</strong> Not available. No carbon savings are claimed without an existing transport baseline.</p>`;
-    carbonDetails.innerHTML = `${comparison}
-      <p><strong>Proposed fleet:</strong> ${isElectricFleet ? "Electric fleet (grid-electricity estimate)" : "Diesel fleet (passenger-kilometre estimate)"}.</p>
-      <p><strong>Distance basis:</strong> Actual daily commute distance; one-way entries are doubled and round-trip entries are used as entered. The 40 km fare minimum is not applied to emissions.</p>
-      <p><strong>Method:</strong> Standard indicative occupancy and emission-factor assumptions. Current cab and bus counts are adjusted using assumed occupancy where employee counts are provided.</p>`;
+    const cabValue = hasCabExisting ? `${formatKg(currentCabMonthlyKg)} kg` : "Not entered";
+    const busValue = hasBusExisting ? `${formatKg(currentBusMonthlyKg)} kg` : "Not entered";
+    const netValue = hasCurrentTransport ? `${formatKg(Math.abs(monthlyDifferenceKg))} kg` : "—";
+    const proposedText = `${formatKg(proposedMonthlyKg)} kg CO₂/month`;
+    const baselineText = `${formatKg(currentMonthlyKg)} kg CO₂/month`;
+    carbonDetails.innerHTML = `
+      <div class="carbon-outlook">
+        <div class="carbon-outlook-heading">
+          <div><span>03 / ENVIRONMENTAL OUTLOOK</span><h4>Estimated monthly carbon emissions</h4></div>
+          <p>Compare existing employee transport emissions with the proposed TGSRTC service.</p>
+        </div>
+        <div class="carbon-outlook-grid carbon-outlook-flow">
+          <article class="carbon-outlook-cell carbon-outlook-existing">
+            <span>01 · EXISTING COMPANY TRANSPORT</span>
+            <strong>${formatKg(currentMonthlyKg)} kg</strong><small>CO₂ / month</small>
+            <div class="carbon-outlook-breakdown">
+              <p><b>Cabs:</b> ${formatKg(currentCabMonthlyKg)} kg CO₂/month · ${activeCabs} active cabs</p>
+              <p><b>Buses:</b> ${formatKg(currentBusMonthlyKg)} kg CO₂/month · ${activeCurrentBuses} active buses</p>
+            </div>
+          </article>
+          <div class="carbon-outlook-arrow" aria-hidden="true">→</div>
+          <article class="carbon-outlook-cell carbon-outlook-proposed-cell">
+            <span>02 · PROPOSED TGSRTC ${isElectricFleet ? "ELECTRIC" : "DIESEL"} FLEET</span>
+            <strong>${formatKg(proposedMonthlyKg)} kg</strong><small>CO₂ / month</small>
+            <p>${formatKm(proposedBusKmPerDay)} bus-km/day × ${proposedBusFactor.toFixed(1)} kg CO₂/bus-km × ${days} operating days</p>
+          </article>
+          <article class="carbon-outlook-cell carbon-outlook-change">
+            <span>03 · ${hasCurrentTransport ? changeLabel : "POTENTIAL MONTHLY CO₂ SAVING"}</span>
+            <strong>${hasCurrentTransport ? `${formatKg(Math.abs(monthlyDifferenceKg))} kg` : "—"}</strong><small>CO₂ / month</small>
+            <p>${hasCurrentTransport ? (monthlyDifferenceKg >= 0 ? "Existing emissions minus proposed TGSRTC emissions" : "Proposed fleet emissions exceed the estimated existing baseline") : "Enter existing transport details to calculate a comparison"}</p>
+          </article>
+        </div>
+        <p><strong>PDF summary:</strong> Existing cabs: ${cabValue}; existing buses: ${busValue}; proposed TGSRTC emissions: ${proposedText}; ${hasCurrentTransport ? `${changeLabel.toLowerCase()}: ${netValue}` : "No existing baseline available"}.</p>
+      </div>
+`;
+  }
+
+  // Indicative vehicle footprint comparison for existing transport vs TGSRTC.
+  // Cab dimensions: 4.5 m × 1.8 m = 8.1 m² per cab.
+  // Bus dimensions: 12 m × 2.6 m = 31.2 m² per bus.
+  const cabFootprintSqm = 4.5 * 1.8;
+  const busFootprintSqm = 12 * 2.6;
+  const existingCabFootprint = activeCabs * cabFootprintSqm;
+  const existingBusFootprint = activeCurrentBuses * busFootprintSqm;
+  const existingFootprintSqm = existingCabFootprint + existingBusFootprint;
+  const proposedBusCount = priced.reduce((sum, route) => sum + route.buses, 0);
+  const proposedFootprintSqm = proposedBusCount * busFootprintSqm;
+  const roadSpaceDifferenceSqm = existingFootprintSqm - proposedFootprintSqm;
+  const formatSqm = value => `${Math.round(value).toLocaleString("en-IN")} m²`;
+  const roadExisting = $("#roadSpaceExisting");
+  if (roadExisting) {
+    roadExisting.textContent = hasCurrentTransport ? formatSqm(existingFootprintSqm) : "Not entered";
+    $("#roadSpaceExistingDetail").textContent = hasCurrentTransport
+      ? `${activeCabs} cabs (${formatSqm(existingCabFootprint)}) + ${activeCurrentBuses} buses (${formatSqm(existingBusFootprint)})`
+      : "Enter existing transport details";
+    $("#roadSpaceProposed").textContent = formatSqm(proposedFootprintSqm);
+    $("#roadSpaceProposedDetail").textContent =
+      `${proposedBusCount} buses × 31.2 m² per bus (12 m × 2.6 m)`;
+    $("#roadSpaceStatus").textContent = !hasCurrentTransport
+      ? "EXISTING BASELINE NOT PROVIDED"
+      : roadSpaceDifferenceSqm >= 0
+        ? "POTENTIAL VEHICLE SPACE SAVED"
+        : "ESTIMATED ADDITIONAL VEHICLE SPACE";
+    $("#roadSpaceDifference").textContent = hasCurrentTransport
+      ? formatSqm(Math.abs(roadSpaceDifferenceSqm))
+      : "—";
+    $("#roadSpaceDifferenceCaption").textContent = hasCurrentTransport
+      ? (roadSpaceDifferenceSqm >= 0
+          ? "Existing footprint minus proposed footprint"
+          : "Proposed footprint exceeds existing footprint")
+      : "Enter existing transport details to compare";
+    $("#roadSpaceNote").textContent =
+      `Existing cabs are estimated at 4.5 m × 1.8 m (${cabFootprintSqm.toFixed(1)} m² each); existing and proposed buses use 12 m × 2.6 m (${busFootprintSqm.toFixed(1)} m² each). This is a static vehicle-footprint estimate, not a measure of moving traffic, lane occupancy, following distance or road capacity.`;
+  }
+
+  if (!document.getElementById("roadSpaceStyle")) {
+    const roadStyle = document.createElement("style");
+    roadStyle.id = "roadSpaceStyle";
+    roadStyle.textContent = `
+      .road-space-panel{display:grid;grid-template-columns:minmax(0,1fr) 44px minmax(0,1fr) minmax(0,1fr);border:1px solid #dce5d8;background:#fff;align-items:stretch}
+      .road-space-column,.road-space-result{padding:clamp(16px,2vw,26px);min-width:0}
+      .road-space-column small,.road-space-result small{display:block;color:#7b9072;font-size:9px;font-weight:800;letter-spacing:1.25px;line-height:1.5}
+      .road-space-column b,.road-space-result b{display:block;margin:15px 0 5px;color:#173c2b;font:800 clamp(22px,2.4vw,35px)/1.15 Manrope,sans-serif;overflow-wrap:anywhere}
+      .road-space-column span,.road-space-result span{display:block;color:#839084;font-size:11px;line-height:1.6}
+      .road-space-proposed{background:#f6f8f4}
+      .road-space-arrow{display:flex;align-items:center;justify-content:center;color:#9aaa94;font-size:27px;background:#fafbf9}
+      .road-space-result{background:#f1f6ed}
+      .road-space-result b{color:#356c43}
+      .road-space-note{margin:12px 0 0;color:#818c80;font-size:10px;line-height:1.65}
+      @media(max-width:900px){.road-space-panel{grid-template-columns:1fr 36px 1fr}.road-space-result{grid-column:1/-1;border-top:1px solid #dce5d8}}
+      @media(max-width:580px){.road-space-panel{grid-template-columns:1fr}.road-space-arrow{height:32px;transform:rotate(90deg)}.road-space-result{grid-column:auto}}
+    `;
+    document.head.append(roadStyle);
   }
 
   $("#resultRows").innerHTML = priced.map(r =>
@@ -708,7 +870,7 @@ function calculate() {
   ).join("");
 
   $("#resultDisclaimer").textContent =
-    `Calculation uses revised TGSRTC BOC rates from Circular No. 27/2022 dated 17.06.2022. For 40–79 km: CO / Green CO ₹57/km; ME / Green ME ₹62/km. For 80 km and above: CO / Green CO ₹53/km; ME / Green ME ₹57/km. One-way distances are doubled to calculate daily travel; round-trip distances are used as entered. Fare distance is the greater of 40 km or the calculated daily distance. Monthly estimate = buses required × fare distance × applicable rate × operating days. Areas assigned to the same shared corridor are combined for bus capacity and cost; the longest entered daily distance is used as an approximate corridor distance, so verify the actual pickup sequence and road distance before confirming the route. This is an indicative estimate, not a quotation. Carbon estimates are generated automatically using indicative occupancy and emission-factor assumptions. The current baseline is shown only when existing company transport is reported; otherwise no carbon savings are claimed. Confirm route feasibility, exact tariff application, vehicle availability and terms with TGSRTC.`;
+    `Calculation uses revised TGSRTC BOC rates from Circular No. 27/2022 dated 17.06.2022. For 40–79 km: City Ordinary ₹57/km; Green City Ordinary (EV) ₹83/km; Metro Express and Metro Deluxe ₹62/km; Green Metro Express (EV) ₹83/km; Metro Premium (EV, AC) ₹87/km. For 80 km and above: City Ordinary ₹53/km; Green City Ordinary (EV) ₹81/km; Metro Express and Metro Deluxe ₹57/km; Green Metro Express (EV) ₹81/km; Metro Premium (EV, AC) ₹85/km. One-way distances are doubled to calculate daily travel; round-trip distances are used as entered. Fare distance is the greater of 40 km or the calculated daily distance. Monthly estimate = buses required × fare distance × applicable rate × operating days. Areas assigned to the same shared corridor are combined for bus capacity and cost; the longest entered daily distance is used as an approximate corridor distance, so verify the actual pickup sequence and road distance before confirming the route. This is an indicative estimate, not a quotation. Environmental emissions are estimated using 1.5 kg CO₂ per bus-km for diesel buses and 0.9 kg CO₂ per bus-km for electric buses, based on figures reported by Humans of EV (2025). The electric-bus figure includes grid-related emissions as reported in that reference. These are indicative reference factors, not measured TGSRTC fleet data. Where existing transport is reported, its bus baseline is estimated using the diesel factor and the weighted proposed-route distance as a proxy; cab emissions use 0.153 kg CO₂ per vehicle-km. Any difference is indicative, not a verified reduction. Road-space comparison uses 4.5 m × 1.8 m per cab and 12 m × 2.6 m per bus, comparing static vehicle footprints only; it does not estimate lane occupancy or traffic flow. Confirm route feasibility, exact tariff application, vehicle availability and terms with TGSRTC.`;
 
   showPage(5);
 }
@@ -812,14 +974,13 @@ function exportEstimatePdf() {
   const totalCost = $("#resultCost").textContent.trim();
   const buses = $("#resultBuses").textContent.trim();
   const covered = $("#resultEmployees").textContent.trim();
-  const carbon = $("#resultCarbon").textContent.trim();
   const gap = 3;
   const boxW = (contentW - gap) / 2;
   metric(margin, y, boxW, "Estimated monthly cost", totalCost);
   metric(margin + boxW + gap, y, boxW, "Proposed fleet", `${buses} buses`);
   y += 27;
   metric(margin, y, boxW, "Employees covered", covered);
-  metric(margin + boxW + gap, y, boxW, "Proposed fleet CO₂ / month", carbon);
+  metric(margin + boxW + gap, y, boxW, "Operating days / month", Number($("#operatingDays").value || 0).toLocaleString("en-IN"));
   y += 29;
   paragraph(`Selected category: ${fleetLabel}.`, 8, ink);
 
@@ -858,9 +1019,8 @@ function exportEstimatePdf() {
     if ($('input[name="kind"][value="bus"]').checked) types.push(`${$("#buses").value || 0} buses; monthly spend ${moneyText($("#busCost").value)}`);
     paragraph(types.length ? types.join(". ") : "Existing transport was reported, but no vehicle type was selected.", 8, ink);
     paragraph(`Current monthly expenditure entered: ${$("#comparisonCurrent")?.textContent.trim() || "Not provided"}. Proposed TGSRTC monthly estimate: ${$("#comparisonProposed")?.textContent.trim() || $("#resultCost").textContent.trim()}.`, 8, ink);
-    const savingValue = $("#resultSaving")?.textContent.trim() ||
-    $("#comparisonDifference")?.textContent.trim() || "—";
-  paragraph(`Estimated monthly cost difference: ${savingValue} (${$("#savingCaption").textContent.trim()}).`, 8, ink);
+    const savingValue = $("#resultSaving")?.textContent.trim() || $("#comparisonDifference")?.textContent.trim() || "—";
+    paragraph(`Estimated monthly cost difference: ${savingValue} (${$("#savingCaption").textContent.trim()}).`, 8, ink);
   } else {
     paragraph("No existing company transport was reported. A current-cost comparison and baseline carbon savings are therefore not claimed.", 8, muted);
   }
@@ -872,6 +1032,7 @@ function exportEstimatePdf() {
   } else {
     paragraph(`Estimated proposed fleet CO₂ per month: ${carbon}.`, 8, muted);
   }
+  paragraph("Fleet transition context: TGSRTC diesel and electric buses can operate as part of a transition towards cleaner public transport. Electrification reduces tailpipe emissions; the overall climate benefit also depends on the electricity used to charge the fleet.", 7.5, muted);
 
   section("Methodology & important notes");
   paragraph($("#resultDisclaimer").textContent.trim(), 7, muted);

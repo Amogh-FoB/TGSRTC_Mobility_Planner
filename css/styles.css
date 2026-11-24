@@ -5870,3 +5870,249 @@ body.dialog-open {
         display: none !important;
     }
 }
+
+
+/* Environmental outlook: three-column carbon comparison */
+.environmental-section .carbon-impact #carbonDetails {
+    display: block;
+    grid-template-columns: none;
+    gap: 0;
+    width: 100%;
+}
+
+.carbon-outlook,
+.carbon-scenes {
+    width: 100%;
+}
+
+.carbon-outlook-heading,
+.carbon-scenes-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    gap: 20px;
+    margin: 8px 0 18px;
+}
+
+.carbon-outlook-heading span,
+.carbon-scenes-heading > span {
+    display: block;
+    color: #71866c;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+}
+
+.carbon-outlook-heading h4,
+.carbon-scenes-heading h4 {
+    margin: 6px 0 0;
+    color: #173c2b;
+    font: 800 clamp(19px, 2.2vw, 25px)/1.25 Manrope, sans-serif;
+}
+
+.carbon-outlook-heading > p,
+.carbon-scenes-heading > p {
+    max-width: 340px;
+    margin: 0;
+    color: #7b887a;
+    font-size: 11px;
+    line-height: 1.6;
+    text-align: right;
+}
+
+.carbon-outlook-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    border: 1px solid #dfe7da;
+    background: #fff;
+}
+
+.carbon-outlook-cell {
+    min-width: 0;
+    padding: 22px 20px;
+    border-right: 1px solid #e1e8dd;
+}
+
+.carbon-outlook-cell:last-child {
+    border-right: 0;
+}
+
+.carbon-outlook-cell > span {
+    display: block;
+    color: #7b887a;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 1.2px;
+}
+
+.carbon-outlook-cell > strong {
+    display: block;
+    margin: 13px 0 2px;
+    color: #173c2b;
+    font: 800 clamp(25px, 3vw, 37px)/1.1 Manrope, sans-serif;
+    overflow-wrap: anywhere;
+}
+
+.carbon-outlook-cell > small {
+    color: #7b887a;
+    font-size: 10px;
+}
+
+.carbon-outlook-cell > p {
+    margin: 12px 0 0;
+    color: #7b887a;
+    font-size: 10px;
+    line-height: 1.6;
+}
+
+.carbon-outlook-change {
+    background: #f1f6ec;
+}
+
+.carbon-outlook-change > strong {
+    color: #24583d;
+}
+
+.carbon-outlook-proposed {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    margin-top: 14px;
+    border: 1px solid #dfe7da;
+    background: #f8faf6;
+}
+
+.carbon-outlook-proposed > div {
+    min-width: 0;
+    padding: 17px 20px;
+}
+
+.carbon-outlook-proposed > div + div {
+    border-left: 1px solid #dfe7da;
+}
+
+.carbon-outlook-proposed span {
+    display: block;
+    color: #71866c;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 1.1px;
+}
+
+.carbon-outlook-proposed strong {
+    display: block;
+    margin: 8px 0 5px;
+    color: #173c2b;
+    font: 800 23px/1.2 Manrope, sans-serif;
+}
+
+.carbon-outlook-proposed small,
+.carbon-outlook-formula p {
+    color: #788578;
+    font-size: 10px;
+    line-height: 1.65;
+}
+
+.carbon-outlook-formula p {
+    margin: 9px 0 0;
+}
+
+.carbon-outlook-note {
+    margin: 12px 0 0 !important;
+    padding: 11px 13px;
+    border-left: 2px solid #91ae78;
+    background: #f5f8f2;
+    color: #788578 !important;
+    font-size: 10px !important;
+    line-height: 1.65 !important;
+}
+
+.carbon-outlook > p:not(.carbon-outlook-note) {
+    margin-top: 12px;
+    color: #788578;
+    font-size: 10px;
+}
+
+.carbon-scenes {
+    margin-top: 26px;
+    padding-top: 22px;
+    border-top: 1px solid #e1e8dd;
+}
+
+.carbon-scenes-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.carbon-scene-card {
+    overflow: hidden;
+    border: 1px solid #dfe7da;
+    background: #fff;
+}
+
+.carbon-scene-card img {
+    display: block;
+    width: 100%;
+    height: 165px;
+    object-fit: cover;
+}
+
+.carbon-scene-card > div {
+    padding: 14px 16px;
+}
+
+.carbon-scene-card span {
+    color: #71866c;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 1.1px;
+}
+
+.carbon-scene-card h5 {
+    margin: 7px 0;
+    color: #173c2b;
+    font: 800 17px/1.3 Manrope, sans-serif;
+}
+
+.carbon-scene-card p {
+    margin: 0;
+    color: #788578;
+    font-size: 10px;
+    line-height: 1.6;
+}
+
+@media (max-width: 760px) {
+    .carbon-outlook-grid {
+        grid-template-columns: 1fr;
+    }
+    .carbon-outlook-cell {
+        border-right: 0;
+        border-bottom: 1px solid #e1e8dd;
+    }
+    .carbon-outlook-cell:last-child {
+        border-bottom: 0;
+    }
+    .carbon-outlook-heading,
+    .carbon-scenes-heading {
+        display: block;
+    }
+    .carbon-outlook-heading > p,
+    .carbon-scenes-heading > p {
+        margin-top: 8px;
+        text-align: left;
+    }
+}
+
+@media (max-width: 560px) {
+    .carbon-outlook-proposed,
+    .carbon-scenes-grid {
+        grid-template-columns: 1fr;
+    }
+    .carbon-outlook-proposed > div + div {
+        border-left: 0;
+        border-top: 1px solid #dfe7da;
+    }
+    .carbon-scene-card img {
+        height: 190px;
+    }
+}

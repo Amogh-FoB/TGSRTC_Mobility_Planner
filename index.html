@@ -7,7 +7,13 @@
     <title>TGSRTC | Corporate Mobility Planner</title>
     <link rel="icon" type="image/png" href="images/tgsrtc-logo.png" />
     <link rel="stylesheet" href="css/styles.css" />
-  </head>
+  \n    <style id="hide-final-page-methodology">
+      .assumptions-panel,
+      .road-space-note {
+        display: none !important;
+      }
+    </style>
+</head>
   <body>
     <div
       class="intro"
@@ -459,7 +465,7 @@
                       Green City Ordinary <small>GREEN CO / ELECTRIC</small>
                     </div>
                     <div class="fleet-specs">
-                      <span><b>35</b> seats</span><span><b>₹57</b> / km*</span>
+                      <span><b>35</b> seats</span><span><b>₹83</b> / km*</span>
                     </div>
                     <div class="fleet-select">SELECT VEHICLE <i>↗</i></div>
                   </div>
@@ -505,16 +511,64 @@
                       Green Metro Express <small>GREEN ME / ELECTRIC</small>
                     </div>
                     <div class="fleet-specs">
-                      <span><b>35</b> seats</span><span><b>₹62</b> / km*</span>
+                      <span><b>35</b> seats</span><span><b>₹83</b> / km*</span>
+                    </div>
+                    <div class="fleet-select">SELECT VEHICLE <i>↗</i></div>
+                  </div>
+                </label>
+                <label class="fleet-card" data-fleet="md"
+                  ><input type="radio" name="fleet" value="md" />
+                  <div class="fleet-photo">
+                    <img
+                      src="images/metro-express.jpeg"
+                      alt="Metro Deluxe diesel non-AC bus"
+                      onerror="this.style.display = 'none'"
+                    />
+                    <div class="photo-fallback">
+                      <span>MD</span><small>METRO DELUXE</small>
+                    </div>
+                    <span class="fuel-tag">DIESEL · NON-AC</span>
+                  </div>
+                  <div class="fleet-info">
+                    <div class="fleet-name">
+                      Metro Deluxe <small>MD / DIESEL / NON-AC</small>
+                    </div>
+                    <div class="fleet-specs">
+                      <span><b>45</b> seats</span><span><b>₹62</b> / km*</span>
+                    </div>
+                    <div class="fleet-select">SELECT VEHICLE <i>↗</i></div>
+                  </div>
+                </label>
+                <label class="fleet-card" data-fleet="mp"
+                  ><input type="radio" name="fleet" value="mp" />
+                  <div class="fleet-photo">
+                    <img
+                      src="images/green-metro-express.jpg"
+                      alt="Metro Premium electric AC bus"
+                      onerror="this.style.display = 'none'"
+                    />
+                    <div class="photo-fallback">
+                      <span>MP</span><small>METRO PREMIUM</small>
+                    </div>
+                    <span class="fuel-tag electric">ELECTRIC · AC</span>
+                  </div>
+                  <div class="fleet-info">
+                    <div class="fleet-name">
+                      Metro Premium <small>MP / ELECTRIC / AC</small>
+                    </div>
+                    <div class="fleet-specs">
+                      <span><b>35</b> seats</span><span><b>₹87</b> / km*</span>
                     </div>
                     <div class="fleet-select">SELECT VEHICLE <i>↗</i></div>
                   </div>
                 </label>
               </div>
               <div class="fleet-footnote">
-                * Displayed rates are for 40–79 km. For 80 km and above, CO /
-                Green CO: ₹53/km; ME / Green ME: ₹57/km. Tariffs are from
-                Circular No. 27/2022 dated 17.06.2022.
+                * Displayed rates are for 40–79 km. For 80 km and above:
+                City Ordinary ₹53/km; Green City Ordinary and Green Metro Express
+                (EV) ₹81/km; Metro Express and Metro Deluxe ₹57/km;
+                Metro Premium (EV, AC) ₹85/km. Tariffs are subject to confirmation
+                with TGSRTC.
               </div>
               <div class="assumption-row">
                 <label class="field"
@@ -639,9 +693,35 @@
                 </div>
               </section>
 
+              <section class="analysis-section road-space-section">
+                <div class="analysis-section-heading">
+                  <div><span>04 / ROAD SPACE OUTLOOK</span><h3>How much vehicle space could be saved?</h3></div>
+                  <p>Compare the combined vehicle footprint of existing transport with the proposed TGSRTC fleet.</p>
+                </div>
+                <div class="road-space-panel">
+                  <div class="road-space-column">
+                    <small>EXISTING COMPANY TRANSPORT</small>
+                    <b id="roadSpaceExisting">—</b>
+                    <span id="roadSpaceExistingDetail">Cabs + existing buses</span>
+                  </div>
+                  <div class="road-space-arrow" aria-hidden="true">→</div>
+                  <div class="road-space-column road-space-proposed">
+                    <small>PROPOSED TGSRTC FLEET</small>
+                    <b id="roadSpaceProposed">—</b>
+                    <span id="roadSpaceProposedDetail">Required buses</span>
+                  </div>
+                  <div class="road-space-result">
+                    <small id="roadSpaceStatus">POTENTIAL ROAD SPACE SAVING</small>
+                    <b id="roadSpaceDifference">—</b>
+                    <span id="roadSpaceDifferenceCaption">Vehicle footprint comparison</span>
+                  </div>
+                </div>
+                <p class="road-space-note" id="roadSpaceNote">Indicative parked/static vehicle footprint only; this does not represent the full road space or traffic impact of moving vehicles.</p>
+              </section>
+
               <section class="analysis-section route-section">
                 <div class="analysis-section-heading">
-                  <div><span>04 / ROUTE PLAN</span><h3>Route-wise cost breakdown</h3></div>
+                  <div><span>05 / ROUTE PLAN</span><h3>Route-wise cost breakdown</h3></div>
                   <p>Monthly estimate by independent route or combined shared corridor.</p>
                 </div>
                 <div class="result-table-wrap">
@@ -654,7 +734,7 @@
               </section>
 
               <section class="assumptions-panel">
-                <div class="assumptions-heading"><span>05 / BASIS OF ESTIMATE</span><b>Assumptions & important notes</b></div>
+                <div class="assumptions-heading"><span>06 / BASIS OF ESTIMATE</span><b>Assumptions & important notes</b></div>
                 <p id="resultDisclaimer">Estimate is indicative and subject to TGSRTC confirmation.</p>
               </section>
 
@@ -710,6 +790,6 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     ></script>
-    <script src="js/app.js"></script>
+    <script src="js/app.js?v=carbon-outlook-v2"></script>
   </body>
 </html>
