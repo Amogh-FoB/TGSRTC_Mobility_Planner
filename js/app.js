@@ -10,6 +10,7 @@ const rates = {
 };
 let currentPage = 1;
 let selectedFleet = "co";
+let stepEditMode = false;
 
 // In-page validation dialog: no native alert(), confirm() or prompt() popups.
 function showAppDialog(title, messages, type = "error") {
@@ -165,7 +166,74 @@ $("#routeList").addEventListener("change", event => {
   if (event.target.matches(".route-distance-type")) updateRoutePreview(event.target.closest(".route-row"));
 });
 $("#calculateButton").addEventListener("click", calculate);
-$("#editPlan").addEventListener("click", () => showPage(1));
+// Editing is section-based: keep the results visible and let the user choose
+// the exact step to revisit from the left-hand journey rail.
+const editPrompt = document.createElement("p");
+editPrompt.className = "step-edit-prompt";
+editPrompt.textContent = "Choose the section you want to edit.";
+editPrompt.hidden = true;
+$(".rail-label")?.after(editPrompt);
+
+const stepNavigationStyle = document.createElement("style");
+stepNavigationStyle.textContent = `
+  .step[data-step]{cursor:pointer;outline-offset:3px}
+  .step[data-step]:focus-visible{outline:2px solid #78a94e;border-radius:5px}
+  .step-edit-prompt{margin:8px 0 12px;padding:9px 11px;background:#edf4e8;border-left:3px solid #78a94e;color:#35563c;font-size:10px;line-height:1.45}
+  .step-list.is-editing .step{cursor:pointer}
+  .step-list.is-editing .step:hover{background:#f0f5ed}
+`;
+document.head.append(stepNavigationStyle);
+
+function setStepEditMode(enabled) {
+  stepEditMode = enabled;
+  editPrompt.hidden = !enabled;
+  $(".step-list")?.classList.toggle("is-editing", enabled);
+
+  $$(".step[data-step]").forEach(step => {
+    step.setAttribute("aria-disabled", String(!enabled));
+    step.setAttribute("tabindex", enabled ? "0" : "-1");
+  });
+}
+
+$$(".step[data-step]").forEach(step => {
+  step.setAttribute("role", "button");
+  step.setAttribute("aria-label", `Open step ${step.dataset.step}: ${$("b", step)?.textContent || ""}`);
+  step.setAttribute("aria-disabled", "true");
+  step.setAttribute("tabindex", "-1");
+
+  const openStep = () => {
+    // The sidebar is a section picker only after the user explicitly chooses
+    // Edit Plan. In normal planning flow, use the Continue / Back buttons.
+    if (!stepEditMode) return;
+
+    const targetPage = Number(step.dataset.step);
+    setStepEditMode(false);
+
+    // Step 5 already contains the last calculated estimate. Return to it
+    // without recalculating empty/default inputs.
+    if (targetPage === 5) {
+      showPage(5);
+      return;
+    }
+
+    showPage(targetPage);
+  };
+
+  step.addEventListener("click", openStep);
+  step.addEventListener("keydown", event => {
+    if (!stepEditMode) return;
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      openStep();
+    }
+  });
+});
+
+$("#editPlan").addEventListener("click", () => {
+  setStepEditMode(true);
+  $(".step-list")?.scrollIntoView({ behavior: "smooth", block: "center" });
+  $(".step[data-step='1']")?.focus({ preventScroll: true });
+});
 $("#printPlan").addEventListener("click", exportEstimatePdf);
 $("#editOffice").addEventListener("click", () => showPage(1));
 $("#office").addEventListener("input", () =>
